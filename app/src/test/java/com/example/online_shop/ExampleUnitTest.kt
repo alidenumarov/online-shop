@@ -1,4 +1,4 @@
-package com.codingstuff.loginandsignup
+package com.example.online_shop
 
 import org.junit.Test
 
