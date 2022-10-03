@@ -17,20 +17,20 @@
         android:text="REGISTER"
         android:textColor="@color/black"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/editText_phone_number_register"
+        app:layout_constraintBottom_toTopOf="@+id/editText_email_register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText_phone_number_register"
+        android:id="@+id/editText_email_register"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="157dp"
         android:ems="10"
-        android:hint="phone number"
+        android:hint="email"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,19 +48,29 @@
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_phone_number_register" />
+        app:layout_constraintTop_toBottomOf="@+id/editText_email_register" />
 
     <TextView
         android:id="@+id/textView_go_to_login_page"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="204dp"
         android:layout_marginEnd="97dp"
         android:text="Already have an account. Go to Login page"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_password_register" />
+        app:layout_constraintTop_toBottomOf="@+id/button_register" />
+
+    <Button
+        android:id="@+id/button_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp"
+        android:text="Register"
+        app:layout_constraintTop_toBottomOf="@+id/editText_password_register"
+        tools:layout_editor_absoluteX="79dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
