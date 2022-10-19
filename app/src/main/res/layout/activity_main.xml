@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".ActivityMain">
 
     <!--on below line we are creating
          a text for heading of our app-->
@@ -14,9 +14,13 @@
         android:id="@+id/idTVHeading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:padding="4dp"
+        android:text="Categories"
         android:textAlignment="center"
         android:textColor="@color/purple_200"
         android:textSize="18sp"
@@ -24,9 +28,10 @@
 
     <!--on below line we are creating a recycler view-->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/idRVCourses"
+        android:id="@+id/idRVCategories"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/idTVHeading" />
+        android:layout_below="@id/idTVHeading"
+        android:layout_marginTop="6dp" />
 
 </RelativeLayout>

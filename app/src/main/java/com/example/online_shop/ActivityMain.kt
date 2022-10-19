@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.*
 
 
-class MainActivity : AppCompatActivity() {
+class ActivityMain : AppCompatActivity() {
 
     private lateinit var dbRef : DatabaseReference
     lateinit var categoryRecyclerView: RecyclerView
-    lateinit var categoryAdapter: CategoryAdapter
+    lateinit var categoryAdapter: AdapterCategory
     lateinit var categoryArrayList: ArrayList<Category>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         // on below line we are initializing
         // our views with their ids.
-        categoryRecyclerView = findViewById(R.id.idRVCourses)
+        categoryRecyclerView = findViewById(R.id.idRVCategories)
 
         // on below line we are initializing our list
         categoryArrayList = arrayListOf<Category>()
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         categoryRecyclerView.layoutManager = layoutManager
 
         // on below line we are initializing our adapter
-        categoryAdapter = CategoryAdapter(categoryArrayList, this)
+        categoryAdapter = AdapterCategory(categoryArrayList, this)
 
         // on below line we are setting
         // adapter to our recycler view.
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                         categoryArrayList.add(user!!)
                     }
 
-                    categoryRecyclerView.adapter = CategoryAdapter(categoryArrayList, context)
+                    categoryRecyclerView.adapter = AdapterCategory(categoryArrayList, context)
                 }
             }
 

@@ -10,53 +10,58 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlin.math.log
 
-class LoginActivity : AppCompatActivity() {
+class ActivityRegister : AppCompatActivity() {
+
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_register)
 
-        val registerText : TextView = findViewById(R.id.textView_go_to_register)
+        val goToLoginTextView : TextView = findViewById(R.id.textView_go_to_login_page)
         auth = Firebase.auth
 
-        // при нажатии на "Go to Register", открываем страницу регистрации
-        registerText.setOnClickListener{
-            val registerIntent = Intent(this, RegisterActivity::class.java)
-            startActivity(registerIntent)
+        // при нажатии на "Go to Login Page", открываем страницу логина
+        goToLoginTextView.setOnClickListener {
+            var goToRegisterIntent = Intent(this, ActivityLogin::class.java)
+            startActivity(goToRegisterIntent)
         }
 
-        val loginButton : Button = findViewById(R.id.button_login)
-        loginButton.setOnClickListener {
-            performLogin()
+        val registerButton : Button = findViewById(R.id.button_register)
+        registerButton.setOnClickListener {
+            performSignUp()
         }
+
     }
 
-    private fun performLogin() {
-        val email = findViewById<EditText>(R.id.editText_email_login).text.toString()
-        val password = findViewById<EditText>(R.id.editText_password_login).text.toString()
+    private fun performSignUp() {
+        val email = findViewById<EditText>(R.id.editText_email_register).text.toString()
+        val password = findViewById<EditText>(R.id.editText_password_register).text.toString()
 
         if (email == "" || password == "") {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT)
                 .show()
         }
-        auth.signInWithEmailAndPassword(email, password)
+
+        auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    val user = auth.currentUser
-                    val intent = Intent(this, MainActivity::class.java)
+                    val intent = Intent(this, ActivityMain::class.java)
                     startActivity(intent)
 
                     Toast.makeText(this, "Success", Toast.LENGTH_SHORT)
                         .show()
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Toast.makeText(baseContext, "Authentication failed.",
                         Toast.LENGTH_SHORT).show()
                 }
+            }.addOnFailureListener {
+                Toast.makeText(this, "Error occurred ${it.localizedMessage}", Toast.LENGTH_SHORT)
+                    .show()
             }
     }
 }

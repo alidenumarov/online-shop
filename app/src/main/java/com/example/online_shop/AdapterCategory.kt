@@ -1,6 +1,8 @@
 package com.example.online_shop
 
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,17 +11,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import java.io.Serializable
 
 
-class CategoryAdapter(
-    // on below line we are passing variables as course list and context
+class AdapterCategory(
+    // on below line we are passing variables as category list and context
     private val categoryList: ArrayList<Category>,
     private val context: Context,
-) : RecyclerView.Adapter<CategoryAdapter.CourseViewHolder>() {
+) : RecyclerView.Adapter<AdapterCategory.CategoryViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): CategoryAdapter.CourseViewHolder {
+    ): AdapterCategory.CategoryViewHolder {
         // this method is use to inflate the layout file
         // which we have created for our recycler view.
         // on below line we are inflating our layout file.
@@ -29,21 +32,31 @@ class CategoryAdapter(
         )
         // at last we are returning our view holder
         // class with our item View File.
-        return CourseViewHolder(itemView)
+        return CategoryViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: CategoryAdapter.CourseViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AdapterCategory.CategoryViewHolder, position: Int) {
         // on below line we are setting data to our text view and our image view.
         val categoryName = categoryList.get(position).name
 
-        holder.courseNameTV.text = categoryName
+        holder.categoryNameTV.text = categoryName
 
         val imageUrl = categoryList.get(position).image_url
-        Picasso.get().load(imageUrl).into(holder.courseIV)
+        Picasso.get().load(imageUrl).into(holder.categoryIV)
+
+        val products = categoryList.get(position).products
 
         holder.itemView.setOnClickListener { // setting on click listener
             // for our items of recycler items.
             Toast.makeText(context, "Clicked category is " + categoryName, Toast.LENGTH_SHORT).show()
+            val intent = Intent(context, ActivityProduct::class.java)
+            val args = Bundle()
+            if (products != null) {
+                args.putSerializable("products", products as Serializable)
+                intent.putExtra("bundle", args)
+            }
+
+            context.startActivity(intent)
         }
     }
 
@@ -52,9 +65,9 @@ class CategoryAdapter(
         return categoryList.size
     }
 
-    class CourseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        // on below line we are initializing our course name text view and our image view.
-        val courseNameTV: TextView = itemView.findViewById(R.id.tvName)
-        val courseIV: ImageView = itemView.findViewById(R.id.imgUrl)
+    class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        // on below line we are initializing our category name text view and our image view.
+        val categoryNameTV: TextView = itemView.findViewById(R.id.tvName)
+        val categoryIV: ImageView = itemView.findViewById(R.id.imgUrl)
     }
 }
