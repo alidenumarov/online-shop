@@ -45,10 +45,6 @@ class AdapterCategory(
 
         val products = categoryList[position].products
 
-        println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-        println(products)
-
-
         holder.itemView.setOnClickListener { // setting on click listener
             // for our items of recycler items.
             Toast.makeText(context, "Clicked category is " + categoryName, Toast.LENGTH_SHORT).show()

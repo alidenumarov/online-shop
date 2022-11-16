@@ -28,7 +28,7 @@ class AdapterFavourites(private val favs: ArrayList<Favourite>) : RecyclerView
         return FavouritesViewHolder(itemView)
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "ResourceAsColor")
     override fun onBindViewHolder(holder: FavouritesViewHolder, position: Int) {
         holder.favName.text = favs[position].name
         holder.favPrice.text = favs[position].price.toString() + " ₸"

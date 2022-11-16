@@ -30,7 +30,7 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
         return ProductViewHolder(itemView)
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "ResourceAsColor")
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         holder.productName.text = products[position].name
         holder.productPrice.text = products[position].price.toString() + " ₸"
@@ -61,7 +61,7 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
     override fun getItemCount() = products.size
 
     private fun addToBucket(product : Product, dbRef : FirebaseDatabase): Boolean {
-
+        var result = true
         if (product.in_favs == 0) {
             val dbLike = dbRef.getReference("likes")
             product.in_favs = 1
@@ -72,7 +72,6 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
 
             val dbCategories = dbRef.getReference("categories")
 
-            var result = true
             dbCategories.child(parentCatId).child("products").
             child(product.id.toString()).child("in_favs").setValue(1).
             addOnSuccessListener {
@@ -81,14 +80,12 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
                 .addOnFailureListener {
                     result = false
                 }
-            return result
         } else {
             val dbLike = dbRef.getReference("likes")
             dbLike.child(product.id.toString()).removeValue()
 
             val dbCategories = dbRef.getReference("categories")
 
-            var result = true
             dbCategories.child(parentCatId).child("products").
             child(product.id.toString()).child("in_favs").setValue(0).
             addOnSuccessListener {
@@ -98,9 +95,8 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
                     result = false
                 }
 
-            return result
         }
 
-        return false
+        return result
     }
 }
