@@ -11,17 +11,22 @@ class ActivityProduct : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products)
 
-        val args = intent.getBundleExtra("bundle")
-        var productList = arrayListOf<Product>()
-        if (args != null) {
-            productList = args.getSerializable("products") as ArrayList<Product>
+        val intentProducts = intent.getBundleExtra("intentProducts")
+        val productList = arrayListOf<Product>()
+        var parentCatId = ""
+        if (intentProducts != null) {
+            val productMap = intentProducts.getSerializable("products") as MutableMap<String, Product>
+            for (i in productMap) {
+                productList.add(i.value)
+            }
+            val catId = intentProducts.getSerializable("intentParentCategory").toString()
+            parentCatId = catId
         }
 
         val recyclerView: RecyclerView = findViewById(R.id.idProductList)
         val llm = LinearLayoutManager(this)
         recyclerView.layoutManager = llm
-        recyclerView.adapter = AdapterProduct(getUserData(productList))
-
+        recyclerView.adapter = AdapterProduct(getUserData(productList), parentCatId, R.layout.product_layout)
 
         println(productList)
     }

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">online-shop</string>
-    <string name="into_basket">В корзину</string>
+    <string name="text_like">Нравится</string>
+    <string name="text_dislike">Не нравится</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -37,14 +37,13 @@ class AdapterCategory(
 
     override fun onBindViewHolder(holder: AdapterCategory.CategoryViewHolder, position: Int) {
         // on below line we are setting data to our text view and our image view.
-        val categoryName = categoryList.get(position).name
-
+        val categoryName = categoryList[position].name
         holder.categoryNameTV.text = categoryName
 
-        val imageUrl = categoryList.get(position).image_url
+        val imageUrl = categoryList[position].image_url
         Picasso.get().load(imageUrl).into(holder.categoryIV)
 
-        val products = categoryList.get(position).products
+        val products = categoryList[position].products
 
         holder.itemView.setOnClickListener { // setting on click listener
             // for our items of recycler items.
@@ -52,8 +51,9 @@ class AdapterCategory(
             val intent = Intent(context, ActivityProduct::class.java)
             val args = Bundle()
             if (products != null) {
+                args.putSerializable("intentParentCategory", categoryList[position].id)
                 args.putSerializable("products", products as Serializable)
-                intent.putExtra("bundle", args)
+                intent.putExtra("intentProducts", args)
             }
 
             context.startActivity(intent)

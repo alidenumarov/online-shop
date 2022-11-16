@@ -3,22 +3,21 @@ package com.example.online_shop
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.firebase.database.Exclude
-import com.google.firebase.database.IgnoreExtraProperties
 
-@IgnoreExtraProperties
-data class Product(
+data class Favourite(
     var id: String? = "",
     var name: String? = "",
     var price: Int? = 0,
     var in_favs: Int? = 0,
     var parent_cat_id: String? = "",
     var image_url: String? = null
-) : Parcelable {
+) :Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readString(),
         parcel.readString()
     ) {
     }
@@ -40,6 +39,7 @@ data class Product(
         parcel.writeString(name)
         parcel.writeValue(price)
         parcel.writeValue(in_favs)
+        parcel.writeString(parent_cat_id)
         parcel.writeString(image_url)
     }
 
@@ -47,13 +47,14 @@ data class Product(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<Product> {
-        override fun createFromParcel(parcel: Parcel): Product {
-            return Product(parcel)
+    companion object CREATOR : Parcelable.Creator<Favourite> {
+        override fun createFromParcel(parcel: Parcel): Favourite {
+            return Favourite(parcel)
         }
 
-        override fun newArray(size: Int): Array<Product?> {
+        override fun newArray(size: Int): Array<Favourite?> {
             return arrayOfNulls(size)
         }
     }
+
 }
