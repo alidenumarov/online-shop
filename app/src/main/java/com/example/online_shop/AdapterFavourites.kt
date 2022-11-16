@@ -34,24 +34,25 @@ class AdapterFavourites(private val favs: ArrayList<Favourite>) : RecyclerView
         holder.favPrice.text = favs[position].price.toString() + " ₸"
 
         if (favs[position].in_favs == 1) {
-            holder.likeFavBtn.text = "Не нравится"
+            holder.likeFavBtn.text = "Dislike"
         } else {
-            holder.likeFavBtn.text = "Нравится"
+            holder.likeFavBtn.text = "Like"
         }
 
-        val imageUrl = favs[position].image_url
+        var imageUrl = favs[position].image_url
+        if (imageUrl == "") {
+            imageUrl = "https://resources.cdn-kaspi.kz/shop/medias/sys_master/images/images/h65/h0f/33125684084766/apple-macbook-air-2020-13-3-mgn63-seryj-100797845-1-Container.jpg"
+        }
         Picasso.get().load(imageUrl).into(holder.favIV)
-        println("imggggggggggggggg")
-        println(imageUrl)
 
         holder.likeFavBtn.setOnClickListener {
             holder.db = FirebaseDatabase.getInstance()
             val product = favs[position]
             val res = addToBucket(product, holder.db)
             if (res) {
-                holder.likeFavBtn.text = "Нравится"
+                holder.likeFavBtn.text = "Like"
             } else {
-                holder.likeFavBtn.text = "Не нравится"
+                holder.likeFavBtn.text = "Dislike"
             }
         }
     }
@@ -59,6 +60,7 @@ class AdapterFavourites(private val favs: ArrayList<Favourite>) : RecyclerView
     override fun getItemCount() = favs.size
 
     private fun addToBucket(fav : Favourite, dbRef : FirebaseDatabase): Boolean {
+        var result = true
         if (fav.in_favs == 0) {
             val dbLike = dbRef.getReference("likes")
             fav.in_favs = 1
@@ -66,23 +68,21 @@ class AdapterFavourites(private val favs: ArrayList<Favourite>) : RecyclerView
 
             val dbCategories = dbRef.getReference("categories")
 
-            var result = true
             dbCategories.child(fav.parent_cat_id.toString()).child("products").
             child(fav.id.toString()).child("in_favs").setValue(1).
             addOnSuccessListener {
                 println("Fav was added to bucket: $fav")
+                return@addOnSuccessListener
             }
                 .addOnFailureListener {
                     result = false
                 }
-            return result
         } else {
             val dbLike = dbRef.getReference("likes")
             dbLike.child(fav.id.toString()).removeValue()
 
             val dbCategories = dbRef.getReference("categories")
 
-            var result = true
             dbCategories.child(fav.parent_cat_id.toString()).child("products").
             child(fav.id.toString()).child("in_favs").setValue(0).
             addOnSuccessListener {
@@ -92,9 +92,9 @@ class AdapterFavourites(private val favs: ArrayList<Favourite>) : RecyclerView
                     result = false
                 }
 
-            return result
         }
 
-        return false
+        return result
+
     }
 }

@@ -12,6 +12,7 @@ data class Favourite(
     var parent_cat_id: String? = "",
     var image_url: String? = null
 ) :Parcelable {
+
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
@@ -56,5 +57,6 @@ data class Favourite(
             return arrayOfNulls(size)
         }
     }
+
 
 }

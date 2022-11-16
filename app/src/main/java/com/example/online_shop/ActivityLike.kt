@@ -54,25 +54,24 @@ class ActivityLike : AppCompatActivity() {
         recFavView.adapter = AdapterFavourites(favList)
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+    }
+
     private fun getUserData(context: Context) {
         dbRef = FirebaseDatabase.getInstance().getReference("likes")
 
         dbRef.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                // Get Post object and use the values to update the UI
                 if (snapshot.exists()) {
                     val t: GenericTypeIndicator<Map<String, Favourite>> =
                         object : GenericTypeIndicator<Map<String, Favourite>>() {}
                     if (snapshot.hasChildren()) {
                         val products = snapshot.getValue(t)
-                        println("pppp p p p pppppppp ")
-                        println(products)
                         products?.forEach { p ->
                             favList.add(p.value)
                         }
-                        println("ffffffffffff ")
-                        println(favList)
-
                         recFavView.adapter = AdapterFavourites(favList)
                     }
                 }

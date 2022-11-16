@@ -1,9 +1,11 @@
 package com.example.online_shop
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+
 
 class ActivityProduct : AppCompatActivity() {
 
@@ -15,7 +17,7 @@ class ActivityProduct : AppCompatActivity() {
         val productList = arrayListOf<Product>()
         var parentCatId = ""
         if (intentProducts != null) {
-            val productMap = intentProducts.getSerializable("products") as MutableMap<String, Product>
+            val productMap = intentProducts.getSerializable("products") as Map<String, Product>
             for (i in productMap) {
                 productList.add(i.value)
             }
@@ -29,6 +31,11 @@ class ActivityProduct : AppCompatActivity() {
         recyclerView.adapter = AdapterProduct(getUserData(productList), parentCatId, R.layout.product_layout)
 
         println(productList)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
     }
 
     private fun getUserData(productList: ArrayList<Product>): ArrayList<Product> {

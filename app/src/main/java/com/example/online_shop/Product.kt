@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties
+import java.io.Serializable
 
 @IgnoreExtraProperties
 data class Product(
@@ -12,8 +13,8 @@ data class Product(
     var price: Int? = 0,
     var in_favs: Int? = 0,
     var parent_cat_id: String? = "",
-    var image_url: String? = null
-) : Parcelable {
+    var image_url: String = ""
+) : Parcelable, Serializable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),

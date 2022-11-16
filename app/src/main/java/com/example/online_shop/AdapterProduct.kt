@@ -34,24 +34,26 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         holder.productName.text = products[position].name
         holder.productPrice.text = products[position].price.toString() + " ₸"
+        var imageUrl = products[position].image_url
+        if (imageUrl == "") {
+            imageUrl = "https://resources.cdn-kaspi.kz/shop/medias/sys_master/images/images/h65/h0f/33125684084766/apple-macbook-air-2020-13-3-mgn63-seryj-100797845-1-Container.jpg"
+        }
+        Picasso.get().load(imageUrl).into(holder.productIV)
 
         if (products[position].in_favs == 1) {
-            holder.likeBtn.text = "Не нравится"
+            holder.likeBtn.text = "Dislike"
         } else {
-            holder.likeBtn.text = "Нравится"
+            holder.likeBtn.text = "Like"
         }
-
-        val imageUrl = products[position].image_url
-        Picasso.get().load(imageUrl).into(holder.productIV)
 
         holder.likeBtn.setOnClickListener {
             holder.db = FirebaseDatabase.getInstance()
             val product = products[position]
             val res = addToBucket(product, holder.db)
             if (res) {
-                holder.likeBtn.text = "Не нравится"
+                holder.likeBtn.text = "Dislike"
             } else {
-                holder.likeBtn.text = "Нравится"
+                holder.likeBtn.text = "Like"
             }
         }
     }
@@ -64,6 +66,8 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
             val dbLike = dbRef.getReference("likes")
             product.in_favs = 1
             product.parent_cat_id = parentCatId
+            println("imggg22222")
+            println(product.image_url)
             dbLike.child(product.id.toString()).setValue(product)
 
             val dbCategories = dbRef.getReference("categories")

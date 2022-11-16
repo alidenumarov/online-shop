@@ -32,7 +32,11 @@ class ActivityRegister : AppCompatActivity() {
         registerButton.setOnClickListener {
             performSignUp()
         }
+    }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
     }
 
     private fun performSignUp() {

@@ -33,6 +33,11 @@ class ActivityLogin : AppCompatActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+    }
+
     private fun performLogin() {
         val email = findViewById<EditText>(R.id.editText_email_login).text.toString()
         val password = findViewById<EditText>(R.id.editText_password_login).text.toString()

@@ -17,7 +17,7 @@ class ActivityMain : AppCompatActivity() {
     lateinit var categoryRecyclerView: RecyclerView
     lateinit var categoryAdapter: AdapterCategory
     lateinit var categoryArrayList: ArrayList<Category>
-    lateinit var categoryMap: MutableMap<String, Category>
+    lateinit var categoryMap: Map<String, Category>
     private lateinit var bottomNavView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +51,7 @@ class ActivityMain : AppCompatActivity() {
 
         // on below line we are initializing our list
         categoryArrayList = arrayListOf()
-        categoryMap = mutableMapOf()
+        categoryMap = mapOf()
 
         // on below line we are creating a variable
         // for our grid layout manager and specifying
@@ -74,18 +74,18 @@ class ActivityMain : AppCompatActivity() {
 
     }
 
-    inline fun <reified T: Any> Any.cast(): T{
-        return this as T
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
     }
 
     private fun getUserData(context: Context) {
-
         dbRef = FirebaseDatabase.getInstance().getReference("categories")
 
         dbRef.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 categoryArrayList = arrayListOf()
-                categoryMap = mutableMapOf()
+                categoryMap = mapOf()
 
                 if (snapshot.exists()) {
                     val t: GenericTypeIndicator<Map<String, Category>> =
@@ -97,24 +97,6 @@ class ActivityMain : AppCompatActivity() {
 
                     categoryRecyclerView.adapter = AdapterCategory(categoryArrayList, context)
                 }
-
-//                if (snapshot.exists()) {
-//
-//                    val product = Product(id= "101", name = "asdfasdf", price = 123, image_url = "https://www.mechta.kz/images/product/51492/26260002255_1.jpg")
-//
-//                    val mpProduct = mutableMapOf<String, Product>()
-//                    mpProduct["2345"]= product
-//
-//                    categoryMap["1"]= Category(id= "1", name="11234", image_url = "https://static.frame.work/aqqzr02l9hrlc1hgbnjxkqx7m1ik",
-//                    products = mpProduct)
-//
-//                    println("cccccccccccc")
-//                    println(categoryMap)
-//                    for (i in categoryMap.iterator()) {
-//                        categoryArrayList.add(i.value)
-//                    }
-//                    categoryRecyclerView.adapter = AdapterCategory(categoryArrayList, context)
-//                }
             }
 
             override fun onCancelled(error: DatabaseError) {

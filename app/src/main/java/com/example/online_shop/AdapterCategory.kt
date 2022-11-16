@@ -45,14 +45,18 @@ class AdapterCategory(
 
         val products = categoryList[position].products
 
+        println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+        println(products)
+
+
         holder.itemView.setOnClickListener { // setting on click listener
             // for our items of recycler items.
             Toast.makeText(context, "Clicked category is " + categoryName, Toast.LENGTH_SHORT).show()
             val intent = Intent(context, ActivityProduct::class.java)
             val args = Bundle()
             if (products != null) {
-                args.putSerializable("intentParentCategory", categoryList[position].id)
                 args.putSerializable("products", products as Serializable)
+                args.putSerializable("intentParentCategory", categoryList[position].id)
                 intent.putExtra("intentProducts", args)
             }
 

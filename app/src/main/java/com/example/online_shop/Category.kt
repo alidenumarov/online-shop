@@ -7,7 +7,7 @@ import com.google.firebase.database.IgnoreExtraProperties
 data class Category(var id : String ?= null,
                     var name : String ?= null,
                     var image_url : String ?= null,
-                    var products : MutableMap<String, Product> ?= null)
+                    var products : Map<String, Product> ?= null)
 {
     @Exclude
     fun toMap(): Map<String, Any?> {
