@@ -12,11 +12,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.*
 
 
-class ActivityLike : AppCompatActivity() {
+class ActivityFavourites : AppCompatActivity() {
     private lateinit var bottomNavView: BottomNavigationView
     private lateinit var dbRef : DatabaseReference
     private lateinit var recFavView : RecyclerView
-    private lateinit var favList : ArrayList<Favourite>
+    private lateinit var favList : ArrayList<Product>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +37,13 @@ class ActivityLike : AppCompatActivity() {
                 }
                 R.id.nav_like -> {
                     Toast.makeText(this, "from Favourites", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, ActivityLike::class.java)
+                    val intent = Intent(this, ActivityFavourites::class.java)
+                    startActivity(intent)
+                    return@setOnItemSelectedListener true
+                }
+                R.id.nav_bucket -> {
+                    Toast.makeText(this, "from Bucket", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, ActivityBucket::class.java)
                     startActivity(intent)
                     return@setOnItemSelectedListener true
                 }
@@ -67,12 +73,12 @@ class ActivityLike : AppCompatActivity() {
             @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    val t: GenericTypeIndicator<Map<String, Favourite>> =
-                        object : GenericTypeIndicator<Map<String, Favourite>>() {}
+                    val t: GenericTypeIndicator<Map<String, Product>> =
+                        object : GenericTypeIndicator<Map<String, Product>>() {}
 
                     if (snapshot.hasChildren()) {
                         favList = arrayListOf()
-                        val mp = mutableMapOf<String, Favourite>()
+                        val mp = mutableMapOf<String, Product>()
                         val products = snapshot.getValue(t)
                         products?.forEach { p ->
                             mp[p.value.id.toString()] = p.value
@@ -81,7 +87,6 @@ class ActivityLike : AppCompatActivity() {
                         for (item in mp) {
                             favList.add(item.value)
                         }
-                        println(favList)
 
                         recFavView.adapter = AdapterFavourites(favList)
                     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,15 +7,16 @@
     app:cardElevation="8dp"
     app:cardCornerRadius="8dp"
     android:layout_marginStart="20dp"
-    android:layout_marginEnd="30dp"
+    android:layout_marginEnd="15dp"
     android:layout_marginTop="15dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
 
         <ImageView
-            android:id="@+id/idProductImgUrl"
+            android:id="@+id/idBucketProductImgUrl"
             android:layout_width="90dp"
             android:layout_height="75dp"
             android:layout_gravity="left"
@@ -38,23 +39,13 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tvProductName"
+                    android:id="@+id/tvBucketProductName"
                     android:layout_width="210dp"
                     android:layout_height="wrap_content"
                     android:maxLength="80"
-                    android:text="Here is the name of Product"
+                    android:text="Here is the name of Bucket Product"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
-
-                <ImageView
-                    android:id="@+id/imgLikeProduct"
-                    android:layout_width="20dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="right"
-                    android:layout_margin="0dp"
-                    android:layout_marginLeft="80dp"
-                    android:src="@drawable/ic_unliked" />
-
 
             </LinearLayout>
 
@@ -66,7 +57,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tvProductPrice"
+                    android:id="@+id/tvBucketProductPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="111 412"
@@ -77,16 +68,6 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnToBucketFromProduct"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="-95dp"
-            android:layout_marginTop="50dp"
-            android:text="@string/text_add_to_bucket"
-            android:textSize="10sp"
-            tools:ignore="SmallSp">
-        </Button>
-    </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

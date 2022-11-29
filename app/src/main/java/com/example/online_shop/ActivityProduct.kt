@@ -29,8 +29,6 @@ class ActivityProduct : AppCompatActivity() {
         val llm = LinearLayoutManager(this)
         recyclerView.layoutManager = llm
         recyclerView.adapter = AdapterProduct(getUserData(productList), parentCatId, R.layout.product_layout)
-
-        println(productList)
     }
 
     override fun onNewIntent(intent: Intent?) {

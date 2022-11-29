@@ -12,28 +12,19 @@ data class Product(
     var name: String? = "",
     var price: Int? = 0,
     var in_favs: Int? = 0,
+    var in_bucket: Int? = 0,
     var parent_cat_id: String? = "",
-    var image_url: String = ""
+    var image_url: String? = ""
 ) : Parcelable, Serializable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readString(),
         parcel.readString()
     ) {
-    }
-
-    @Exclude
-    fun toMap(): Map<String, Any?> {
-        return mapOf(
-            "id" to id,
-            "name" to name,
-            "price" to price,
-            "in_favs" to in_favs,
-            "parent_cat_id" to parent_cat_id,
-            "image_url" to image_url,
-        )
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -41,6 +32,8 @@ data class Product(
         parcel.writeString(name)
         parcel.writeValue(price)
         parcel.writeValue(in_favs)
+        parcel.writeValue(in_bucket)
+        parcel.writeString(parent_cat_id)
         parcel.writeString(image_url)
     }
 

@@ -19,7 +19,8 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
         val productName: TextView = itemView.findViewById(R.id.tvProductName)
         val productPrice: TextView = itemView.findViewById(R.id.tvProductPrice)
         val productIV: ImageView = itemView.findViewById(R.id.idProductImgUrl)
-        val likeBtn : Button = itemView.findViewById(R.id.btnLike)
+        val toBucketBtn : Button = itemView.findViewById(R.id.btnToBucketFromProduct)
+        val likeImg : ImageView = itemView.findViewById(R.id.imgLikeProduct)
         lateinit var db : FirebaseDatabase
 
     }
@@ -41,20 +42,40 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
         Picasso.get().load(imageUrl).into(holder.productIV)
 
         if (products[position].in_favs == 1) {
-            holder.likeBtn.text = "Dislike"
+            holder.likeImg.setImageResource(R.drawable.ic_liked)
         } else {
-            holder.likeBtn.text = "Like"
+            holder.likeImg.setImageResource(R.drawable.ic_unliked)
         }
 
-        holder.likeBtn.setOnClickListener {
-            holder.db = FirebaseDatabase.getInstance()
+        if (products[position].in_bucket == 1) {
+            holder.toBucketBtn.text = "remove from bucket".uppercase()
+        } else {
+            holder.toBucketBtn.text = "to bucket".uppercase()
+        }
+
+        holder.toBucketBtn.setOnClickListener {
             val product = products[position]
+            holder.db = FirebaseDatabase.getInstance()
             val res = addOrRemoveInBucket(product, holder.db)
             if (res) {
-                if (holder.likeBtn.text == "Like") {
-                    holder.likeBtn.text = "Dislike"
+                val btnTxt = holder.toBucketBtn.text
+                if (btnTxt.toString().uppercase() == "to bucket".uppercase()) {
+                    holder.toBucketBtn.text = "remove from bucket".uppercase()
                 } else {
-                    holder.likeBtn.text = "Like"
+                    holder.toBucketBtn.text = "to bucket".uppercase()
+                }
+            }
+        }
+
+        holder.likeImg.setOnClickListener{
+            holder.db = FirebaseDatabase.getInstance()
+            val product = products[position]
+            val res = addOrRemoveInFavs(product, holder.db)
+            if (res) {
+                if (holder.likeImg.id == R.drawable.ic_liked) {
+                    holder.likeImg.setImageResource(R.drawable.ic_unliked)
+                } else {
+                    holder.likeImg.setImageResource(R.drawable.ic_liked)
                 }
             }
         }
@@ -62,13 +83,12 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
 
     override fun getItemCount() = products.size
 
-    private fun addOrRemoveInBucket(product : Product, dbRef : FirebaseDatabase): Boolean {
+    private fun addOrRemoveInFavs(product : Product, dbRef : FirebaseDatabase): Boolean {
         var result = true
         if (product.in_favs == 0) {
             val dbLike = dbRef.getReference("likes")
             product.in_favs = 1
             product.parent_cat_id = parentCatId
-            println(product.image_url)
             dbLike.child(product.id.toString()).setValue(product)
 
             val dbCategories = dbRef.getReference("categories")
@@ -76,7 +96,7 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
             dbCategories.child(parentCatId).child("products").
             child(product.id.toString()).child("in_favs").setValue(1).
             addOnSuccessListener {
-                println("Product was added to bucket: $product")
+                println("Product was added to favs: $product")
             }
             .addOnFailureListener {
                 result = false
@@ -90,7 +110,7 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
             dbCategories.child(parentCatId).child("products").
             child(product.id.toString()).child("in_favs").setValue(0).
             addOnSuccessListener {
-                println("Product was removed from bucket: $product")
+                println("Product was removed from favs: $product")
             }
             .addOnFailureListener {
                 result = false
@@ -100,4 +120,43 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
 
         return result
     }
+
+    private fun addOrRemoveInBucket(product : Product, dbRef : FirebaseDatabase): Boolean {
+        var result = true
+        if (product.in_bucket == 0) {
+            val dbLike = dbRef.getReference("bucket_items")
+            product.in_bucket = 1
+            product.parent_cat_id = parentCatId
+            dbLike.child(product.id.toString()).setValue(product)
+
+            val dbCategories = dbRef.getReference("categories")
+
+            dbCategories.child(parentCatId).child("products").
+            child(product.id.toString()).child("in_bucket").setValue(1).
+            addOnSuccessListener {
+                println("product was added to bucket: $product")
+            }
+                .addOnFailureListener {
+                    result = false
+                }
+        } else {
+            val dbLike = dbRef.getReference("bucket_items")
+            dbLike.child(product.id.toString()).removeValue()
+
+            val dbCategories = dbRef.getReference("categories")
+
+            dbCategories.child(parentCatId).child("products").
+            child(product.id.toString()).child("in_bucket").setValue(0).
+            addOnSuccessListener {
+                println("product was removed from bucket: $product")
+            }
+                .addOnFailureListener {
+                    result = false
+                }
+
+        }
+
+        return result
+    }
+
 }

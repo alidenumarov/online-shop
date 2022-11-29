@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ActivityFavourites">
+    tools:context=".ActivityBucket">
 
     <TextView
         android:id="@+id/idTVHeading"
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="4dp"
-        android:text="Favourites"
+        android:text="Bucket"
         android:textAlignment="center"
         android:textColor="@color/purple_200"
         android:textSize="18sp"
@@ -23,14 +23,14 @@
 
     <!--on below line we are creating a recycler view-->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/idRVFavourites"
+        android:id="@+id/idRVBucketItems"
         android:layout_width="match_parent"
         android:layout_height="630dp"
         android:layout_below="@id/idTVHeading"
         app:layout_constraintTop_toBottomOf="@+id/idTVHeading" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation_like"
+        android:id="@+id/bottom_navigation_bucket"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"

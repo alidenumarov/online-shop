@@ -35,7 +35,13 @@ class ActivityMain : AppCompatActivity() {
                 }
                 R.id.nav_like -> {
                     Toast.makeText(this, "from Categories", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, ActivityLike::class.java)
+                    val intent = Intent(this, ActivityFavourites::class.java)
+                    startActivity(intent)
+                    return@setOnItemSelectedListener true
+                }
+                R.id.nav_bucket -> {
+                    Toast.makeText(this, "from Bucket", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, ActivityBucket::class.java)
                     startActivity(intent)
                     return@setOnItemSelectedListener true
                 }

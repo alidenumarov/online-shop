@@ -1,0 +1,107 @@
+package com.example.online_shop
+
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.*
+
+class ActivityBucket : AppCompatActivity() {
+    private lateinit var bottomNavView: BottomNavigationView
+    private lateinit var dbRef : DatabaseReference
+    private lateinit var recBucketProductView : RecyclerView
+    private lateinit var bucketProductList : ArrayList<Product>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_bucket)
+        bottomNavView = findViewById(R.id.bottom_navigation_bucket)
+
+        bottomNavView.selectedItemId = R.id.nav_bucket
+
+        bottomNavView.setOnItemSelectedListener { item ->
+            when(item.itemId) {
+                R.id.nav_category -> {
+                    Toast.makeText(this, "from Bucket", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, ActivityMain::class.java)
+                    startActivity(intent)
+                    return@setOnItemSelectedListener true
+                }
+                R.id.nav_like -> {
+                    Toast.makeText(this, "from Bucket", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, ActivityFavourites::class.java)
+                    startActivity(intent)
+                    return@setOnItemSelectedListener true
+                }
+                R.id.nav_bucket -> {
+                    Toast.makeText(this, "from Bucket", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, ActivityBucket::class.java)
+                    startActivity(intent)
+                    return@setOnItemSelectedListener true
+                }
+                else -> {
+                    return@setOnItemSelectedListener false
+                }
+            }
+        }
+        bucketProductList = arrayListOf()
+        getUserData(this)
+
+        recBucketProductView = findViewById(R.id.idRVBucketItems)
+        val llm = LinearLayoutManager(this)
+        recBucketProductView.layoutManager = llm
+        recBucketProductView.adapter = AdapterBucket(bucketProductList)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+    }
+
+    private fun getUserData(context: Context) {
+        dbRef = FirebaseDatabase.getInstance().getReference("bucket_items")
+
+        dbRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val t: GenericTypeIndicator<Map<String, Product>> =
+                        object : GenericTypeIndicator<Map<String, Product>>() {}
+
+                    if (snapshot.hasChildren()) {
+                        bucketProductList = arrayListOf()
+                        val mp = mutableMapOf<String, Product>()
+                        val products = snapshot.getValue(t)
+                        products?.forEach { p ->
+                            mp[p.value.id.toString()] = p.value
+                        }
+                        // make unique
+                        for (item in mp) {
+                            bucketProductList.add(item.value)
+                        }
+
+                        recBucketProductView.adapter = AdapterBucket(bucketProductList)
+                    }
+                } else {
+                    handleArrayFunction()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+    private fun handleArrayFunction()  {
+        dbRef = FirebaseDatabase.getInstance().getReference("bucket_items")
+        dbRef.get().addOnSuccessListener {
+//            recFavView.adapter = AdapterFavourites(favList)
+            recBucketProductView.adapter = AdapterBucket(arrayListOf())
+        }
+    }
+}

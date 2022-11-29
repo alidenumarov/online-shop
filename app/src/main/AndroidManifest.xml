@@ -17,7 +17,10 @@
         android:theme="@style/Theme.Onlineshop"
         tools:targetApi="31">
         <activity
-            android:name=".ActivityLike"
+            android:name=".ActivityBucket"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityFavourites"
             android:exported="false" />
         <activity
             android:name=".ActivityProduct"

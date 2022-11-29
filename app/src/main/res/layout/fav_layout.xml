@@ -47,6 +47,15 @@
                     android:textColor="@color/black"
                     android:textSize="15sp" />
 
+                <ImageView
+                    android:id="@+id/imgLikeId"
+                    android:layout_width="20dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="right"
+                    android:layout_margin="0dp"
+                    android:layout_marginLeft="80dp"
+                    android:src="@drawable/ic_unliked" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -69,12 +78,12 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/btnFavLike"
+            android:id="@+id/btnToBucketFromFav"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="-95dp"
             android:layout_marginTop="50dp"
-            android:text="@string/text_dislike"
+            android:text="@string/text_add_to_bucket"
             android:textSize="10sp"
             tools:ignore="SmallSp">
         </Button>
