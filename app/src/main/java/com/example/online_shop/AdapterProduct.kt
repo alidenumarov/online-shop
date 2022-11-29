@@ -124,10 +124,10 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
     private fun addOrRemoveInBucket(product : Product, dbRef : FirebaseDatabase): Boolean {
         var result = true
         if (product.in_bucket == 0) {
-            val dbLike = dbRef.getReference("bucket_items")
+            val dbBucket = dbRef.getReference("bucket_items")
             product.in_bucket = 1
             product.parent_cat_id = parentCatId
-            dbLike.child(product.id.toString()).setValue(product)
+            dbBucket.child(product.id.toString()).setValue(product)
 
             val dbCategories = dbRef.getReference("categories")
 
@@ -139,6 +139,16 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
                 .addOnFailureListener {
                     result = false
                 }
+
+            val dbLike = dbRef.getReference("likes")
+            val a = dbLike.child(product.id.toString()).get()
+            a.addOnSuccessListener { it ->
+                if (it.value != null) {
+                    dbLike.child(product.id.toString()).child("in_bucket").setValue(1)
+                }
+            }
+
+
         } else {
             val dbLike = dbRef.getReference("bucket_items")
             dbLike.child(product.id.toString()).removeValue()

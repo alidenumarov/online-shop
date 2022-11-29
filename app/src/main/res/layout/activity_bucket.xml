@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ActivityBucket">
-
     <TextView
         android:id="@+id/idTVHeading"
         android:layout_width="match_parent"
@@ -20,14 +20,96 @@
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="8dp" />
-
     <!--on below line we are creating a recycler view-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/idRVBucketItems"
         android:layout_width="match_parent"
-        android:layout_height="630dp"
+        android:layout_height="530dp"
         android:layout_below="@id/idTVHeading"
         app:layout_constraintTop_toBottomOf="@+id/idTVHeading" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/idRVBucketItems"
+        tools:ignore="MissingConstraints">
+        <LinearLayout
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="6dp"
+            android:layout_marginStart="10dp"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="75dp"
+                        android:layout_height="wrap_content"
+                        android:maxLength="80"
+                        android:text="In bucket:"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tvCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLength="80"
+                        android:textStyle="bold"
+                        android:text="4 item(s)"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:maxLength="80"
+                        android:text="Total:"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tvTotal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLength="80"
+                        android:textStyle="bold"
+                        android:text="1111 111 T"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_bucket"
@@ -39,6 +121,4 @@
         app:itemTextColor="@drawable/selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/menu_navigation" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
