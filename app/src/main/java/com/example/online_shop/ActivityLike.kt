@@ -1,5 +1,6 @@
 package com.example.online_shop
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -63,17 +64,29 @@ class ActivityLike : AppCompatActivity() {
         dbRef = FirebaseDatabase.getInstance().getReference("likes")
 
         dbRef.addValueEventListener(object : ValueEventListener{
+            @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     val t: GenericTypeIndicator<Map<String, Favourite>> =
                         object : GenericTypeIndicator<Map<String, Favourite>>() {}
+
                     if (snapshot.hasChildren()) {
+                        favList = arrayListOf()
+                        val mp = mutableMapOf<String, Favourite>()
                         val products = snapshot.getValue(t)
                         products?.forEach { p ->
-                            favList.add(p.value)
+                            mp[p.value.id.toString()] = p.value
                         }
+                        // make unique
+                        for (item in mp) {
+                            favList.add(item.value)
+                        }
+                        println(favList)
+
                         recFavView.adapter = AdapterFavourites(favList)
                     }
+                } else {
+                    handleArrayFunction()
                 }
             }
 
@@ -82,5 +95,12 @@ class ActivityLike : AppCompatActivity() {
             }
 
         })
+    }
+    private fun handleArrayFunction()  {
+        dbRef = FirebaseDatabase.getInstance().getReference("likes")
+        dbRef.get().addOnSuccessListener {
+//            recFavView.adapter = AdapterFavourites(favList)
+            recFavView.adapter = AdapterFavourites(arrayListOf())
+        }
     }
 }

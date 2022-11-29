@@ -49,24 +49,25 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
         holder.likeBtn.setOnClickListener {
             holder.db = FirebaseDatabase.getInstance()
             val product = products[position]
-            val res = addToBucket(product, holder.db)
+            val res = addOrRemoveInBucket(product, holder.db)
             if (res) {
-                holder.likeBtn.text = "Dislike"
-            } else {
-                holder.likeBtn.text = "Like"
+                if (holder.likeBtn.text == "Like") {
+                    holder.likeBtn.text = "Dislike"
+                } else {
+                    holder.likeBtn.text = "Like"
+                }
             }
         }
     }
 
     override fun getItemCount() = products.size
 
-    private fun addToBucket(product : Product, dbRef : FirebaseDatabase): Boolean {
+    private fun addOrRemoveInBucket(product : Product, dbRef : FirebaseDatabase): Boolean {
         var result = true
         if (product.in_favs == 0) {
             val dbLike = dbRef.getReference("likes")
             product.in_favs = 1
             product.parent_cat_id = parentCatId
-            println("imggg22222")
             println(product.image_url)
             dbLike.child(product.id.toString()).setValue(product)
 
@@ -77,9 +78,9 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
             addOnSuccessListener {
                 println("Product was added to bucket: $product")
             }
-                .addOnFailureListener {
-                    result = false
-                }
+            .addOnFailureListener {
+                result = false
+            }
         } else {
             val dbLike = dbRef.getReference("likes")
             dbLike.child(product.id.toString()).removeValue()
@@ -91,9 +92,9 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
             addOnSuccessListener {
                 println("Product was removed from bucket: $product")
             }
-                .addOnFailureListener {
-                    result = false
-                }
+            .addOnFailureListener {
+                result = false
+            }
 
         }
 
