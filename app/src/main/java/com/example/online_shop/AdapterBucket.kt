@@ -1,16 +1,22 @@
 package com.example.online_shop
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
+import java.io.Serializable
 
-class AdapterBucket(private var bucketProducts: ArrayList<Product>) : RecyclerView
+class AdapterBucket(private var bucketProducts: ArrayList<Product>,
+                    private val ctx: Context) : RecyclerView
 .Adapter<AdapterBucket.BucketViewHolder>() {
     class BucketViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val bucketProductName: TextView = itemView.findViewById(R.id.tvBucketProductName)
@@ -64,6 +70,18 @@ class AdapterBucket(private var bucketProducts: ArrayList<Product>) : RecyclerVi
 
         holder.removeFromBucketTV.setOnClickListener {
             removeFromBucket(bucketProducts[position], holder.db)
+        }
+
+        holder.itemView.setOnClickListener { // setting on click listener
+            // for our items of recycler items.
+            val product = bucketProducts[position]
+            Toast.makeText(ctx, "Clicked product is " + product.name, Toast.LENGTH_SHORT).show()
+            val intent = Intent(ctx, ActivityProductDetail::class.java)
+            val args = Bundle()
+            args.putSerializable("productDetails", product as Serializable)
+            intent.putExtra("intentProductDetails", args)
+
+            ctx.startActivity(intent)
         }
 
     }

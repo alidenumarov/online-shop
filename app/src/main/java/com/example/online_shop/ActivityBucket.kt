@@ -60,7 +60,7 @@ class ActivityBucket : AppCompatActivity() {
         recBucketProductView = findViewById(R.id.idRVBucketItems)
         val llm = LinearLayoutManager(this)
         recBucketProductView.layoutManager = llm
-        recBucketProductView.adapter = AdapterBucket(bucketProductList)
+        recBucketProductView.adapter = AdapterBucket(bucketProductList, this)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -94,12 +94,12 @@ class ActivityBucket : AppCompatActivity() {
                             totalCount += item.value.count_in_bucket!!
                         }
 
-                        recBucketProductView.adapter = AdapterBucket(bucketProductList)
+                        recBucketProductView.adapter = AdapterBucket(bucketProductList, context)
                         totalCountView.text = "$totalCount"
                         totalSumView.text = "$totalPrice ₸"
                     }
                 } else {
-                    handleArrayFunction()
+                    handleArrayFunction(context)
                 }
             }
 
@@ -109,13 +109,13 @@ class ActivityBucket : AppCompatActivity() {
 
         })
     }
-    private fun handleArrayFunction()  {
+    private fun handleArrayFunction(context: Context)  {
         dbRef = FirebaseDatabase.getInstance().getReference("bucket_items")
         dbRef.get().addOnSuccessListener {
 //            recFavView.adapter = AdapterFavourites(favList)
             totalCountView.text = "No items yet"
             totalSumView.text = "0 ₸"
-            recBucketProductView.adapter = AdapterBucket(arrayListOf())
+            recBucketProductView.adapter = AdapterBucket(arrayListOf(), context)
         }
     }
 }
