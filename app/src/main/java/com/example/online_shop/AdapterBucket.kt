@@ -16,6 +16,10 @@ class AdapterBucket(private var bucketProducts: ArrayList<Product>) : RecyclerVi
         val bucketProductName: TextView = itemView.findViewById(R.id.tvBucketProductName)
         val bucketProductPrice: TextView = itemView.findViewById(R.id.tvBucketProductPrice)
         val bucketProductIV: ImageView = itemView.findViewById(R.id.idBucketProductImgUrl)
+        val curCountET: TextView = itemView.findViewById(R.id.idCurCountET)
+        val decreaseCountIV: ImageView = itemView.findViewById(R.id.idImgCountMinus)
+        val increaseCountIV: ImageView = itemView.findViewById(R.id.idImgCountPlus)
+
         lateinit var db : FirebaseDatabase
     }
 
@@ -29,6 +33,8 @@ class AdapterBucket(private var bucketProducts: ArrayList<Product>) : RecyclerVi
     override fun onBindViewHolder(holder: BucketViewHolder, position: Int) {
         holder.bucketProductName.text = bucketProducts[position].name
         holder.bucketProductPrice.text = bucketProducts[position].price.toString() + " ₸"
+        holder.curCountET.text = bucketProducts[position].count_in_bucket.toString()
+        holder.db = FirebaseDatabase.getInstance()
 
         var imageUrl = bucketProducts[position].image_url
         if (imageUrl == "") {
@@ -36,7 +42,42 @@ class AdapterBucket(private var bucketProducts: ArrayList<Product>) : RecyclerVi
         }
 
         Picasso.get().load(imageUrl).into(holder.bucketProductIV)
+
+        holder.decreaseCountIV.setOnClickListener{
+            var curCount = holder.curCountET.text.toString().toInt()
+            if (curCount > 1) {
+                curCount -= 1
+                addOrRemoveCountInBucket(bucketProducts[position], curCount, holder.db)
+                holder.curCountET.text = curCount.toString()
+            }
+        }
+
+        holder.increaseCountIV.setOnClickListener{
+            var curCount = holder.curCountET.text.toString().toInt()
+            if (curCount < 999) {
+                curCount += 1
+                addOrRemoveCountInBucket(bucketProducts[position], curCount, holder.db)
+                holder.curCountET.text = curCount.toString()
+            }
+        }
+
     }
 
     override fun getItemCount() = bucketProducts.size
+
+    private fun addOrRemoveCountInBucket(product : Product, curCount : Int, dbRef : FirebaseDatabase): Boolean {
+        var result = true
+        val db = dbRef.getReference("bucket_items")
+        db.child(product.id.toString()).child("count_in_bucket").setValue(curCount).
+        addOnSuccessListener {
+            println("count was changed: $product")
+            return@addOnSuccessListener
+        }
+            .addOnFailureListener {
+                result = false
+            }
+
+        return result
+    }
+
 }

@@ -13,12 +13,14 @@ data class Product(
     var price: Int? = 0,
     var in_favs: Int? = 0,
     var in_bucket: Int? = 0,
+    var count_in_bucket: Int? = 1,
     var parent_cat_id: String? = "",
     var image_url: String? = ""
 ) : Parcelable, Serializable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
+        parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
@@ -33,6 +35,7 @@ data class Product(
         parcel.writeValue(price)
         parcel.writeValue(in_favs)
         parcel.writeValue(in_bucket)
+        parcel.writeValue(count_in_bucket)
         parcel.writeString(parent_cat_id)
         parcel.writeString(image_url)
     }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,8 @@ import com.google.firebase.database.*
 
 class ActivityBucket : AppCompatActivity() {
     private lateinit var bottomNavView: BottomNavigationView
+    private lateinit var totalCountView: TextView
+    private lateinit var totalSumView: TextView
     private lateinit var dbRef : DatabaseReference
     private lateinit var recBucketProductView : RecyclerView
     private lateinit var bucketProductList : ArrayList<Product>
@@ -21,6 +24,8 @@ class ActivityBucket : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bucket)
         bottomNavView = findViewById(R.id.bottom_navigation_bucket)
+        totalCountView = findViewById(R.id.tvItemCount)
+        totalSumView = findViewById(R.id.tvTotalSum)
 
         bottomNavView.selectedItemId = R.id.nav_bucket
 
@@ -67,11 +72,14 @@ class ActivityBucket : AppCompatActivity() {
         dbRef = FirebaseDatabase.getInstance().getReference("bucket_items")
 
         dbRef.addValueEventListener(object : ValueEventListener {
+            @SuppressLint("SetTextI18n")
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     val t: GenericTypeIndicator<Map<String, Product>> =
                         object : GenericTypeIndicator<Map<String, Product>>() {}
 
+                    var totalPrice = 0
+                    var totalCount = 0
                     if (snapshot.hasChildren()) {
                         bucketProductList = arrayListOf()
                         val mp = mutableMapOf<String, Product>()
@@ -82,9 +90,13 @@ class ActivityBucket : AppCompatActivity() {
                         // make unique
                         for (item in mp) {
                             bucketProductList.add(item.value)
+                            totalPrice += item.value.price!! * item.value.count_in_bucket!!
+                            totalCount += item.value.count_in_bucket!!
                         }
 
                         recBucketProductView.adapter = AdapterBucket(bucketProductList)
+                        totalCountView.text = "$totalCount"
+                        totalSumView.text = "$totalPrice ₸"
                     }
                 } else {
                     handleArrayFunction()
