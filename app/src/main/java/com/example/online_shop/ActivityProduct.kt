@@ -28,7 +28,7 @@ class ActivityProduct : AppCompatActivity() {
         val recyclerView: RecyclerView = findViewById(R.id.idProductList)
         val llm = LinearLayoutManager(this)
         recyclerView.layoutManager = llm
-        recyclerView.adapter = AdapterProduct(getUserData(productList), parentCatId, R.layout.product_layout)
+        recyclerView.adapter = AdapterProduct(productList, parentCatId, this)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -36,13 +36,13 @@ class ActivityProduct : AppCompatActivity() {
         setIntent(intent)
     }
 
-    private fun getUserData(productList: ArrayList<Product>): ArrayList<Product> {
-        val products = arrayListOf<Product>()
-
-        for (pr in productList) {
-            products.add(pr)
-        }
-
-        return products
-    }
+//    private fun getUserData(productList: ArrayList<Product>): ArrayList<Product> {
+//        val products = arrayListOf<Product>()
+//
+//        for (pr in productList) {
+//            products.add(pr)
+//        }
+//
+//        return products
+//    }
 }

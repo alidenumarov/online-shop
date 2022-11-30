@@ -15,8 +15,24 @@ data class Product(
     var in_bucket: Int? = 0,
     var count_in_bucket: Int? = 1,
     var parent_cat_id: String? = "",
-    var image_url: String? = ""
+    var image_url: String? = "",
+    var comments : Map<String, Comment> ?= null
 ) : Parcelable, Serializable {
+    @Exclude
+    fun toMap(): Map<String, Any?> {
+        return mapOf(
+            "id" to id,
+            "name" to name,
+            "price" to price,
+            "in_favs" to in_favs,
+            "in_bucket" to in_bucket,
+            "count_in_bucket" to count_in_bucket,
+            "parent_cat_id" to parent_cat_id,
+            "image_url" to image_url,
+            "comments" to comments,
+        )
+    }
+
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
@@ -25,7 +41,7 @@ data class Product(
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readString(),
-        parcel.readString()
+        parcel.readString(),
     ) {
     }
 

@@ -19,10 +19,8 @@ class AdapterCategory(
     private val categoryList: ArrayList<Category>,
     private val context: Context,
 ) : RecyclerView.Adapter<AdapterCategory.CategoryViewHolder>() {
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): AdapterCategory.CategoryViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int
+    ): CategoryViewHolder {
         // this method is use to inflate the layout file
         // which we have created for our recycler view.
         // on below line we are inflating our layout file.

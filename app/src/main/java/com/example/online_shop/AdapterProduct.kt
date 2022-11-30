@@ -1,19 +1,25 @@
 package com.example.online_shop
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
+import java.io.Serializable
 
-class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: String, val itemLayout: Int) : RecyclerView
-.Adapter<AdapterProduct.ProductViewHolder>() {
-
+class AdapterProduct(private val products: ArrayList<Product>,
+                     var parentCatId: String,
+                     private val ctx: Context,
+) : RecyclerView.Adapter<AdapterProduct.ProductViewHolder>() {
 
     class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val productName: TextView = itemView.findViewById(R.id.tvProductName)
@@ -78,6 +84,18 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
                     holder.likeImg.setImageResource(R.drawable.ic_liked)
                 }
             }
+        }
+
+        holder.itemView.setOnClickListener { // setting on click listener
+            // for our items of recycler items.
+            val product = products[position]
+            Toast.makeText(ctx, "Clicked product is " + product.name, Toast.LENGTH_SHORT).show()
+            val intent = Intent(ctx, ActivityProductDetail::class.java)
+            val args = Bundle()
+            args.putSerializable("productDetails", product as Serializable)
+            intent.putExtra("intentProductDetails", args)
+
+            ctx.startActivity(intent)
         }
     }
 
