@@ -70,20 +70,13 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
         holder.likeImg.setOnClickListener{
             holder.db = FirebaseDatabase.getInstance()
             val product = products[position]
-            val res = addOrRemoveInFavs(product, holder.db)
-            if (res) {
-                if (holder.likeImg.id == R.drawable.ic_liked) {
-                    holder.likeImg.setImageResource(R.drawable.ic_unliked)
-                } else {
-                    holder.likeImg.setImageResource(R.drawable.ic_liked)
-                }
-            }
+            addOrRemoveInFavs(product, holder.db, holder)
         }
     }
 
     override fun getItemCount() = products.size
 
-    private fun addOrRemoveInFavs(product : Product, dbRef : FirebaseDatabase): Boolean {
+    private fun addOrRemoveInFavs(product : Product, dbRef : FirebaseDatabase, holder : AdapterProduct.ProductViewHolder): Boolean {
         var result = true
         if (product.in_favs == 0) {
             val dbLike = dbRef.getReference("likes")
@@ -96,6 +89,7 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
             dbCategories.child(parentCatId).child("products").
             child(product.id.toString()).child("in_favs").setValue(1).
             addOnSuccessListener {
+                holder.likeImg.setImageResource(R.drawable.ic_liked)
                 println("Product was added to favs: $product")
             }
             .addOnFailureListener {
@@ -110,6 +104,7 @@ class AdapterProduct(private val products: ArrayList<Product>, var parentCatId: 
             dbCategories.child(parentCatId).child("products").
             child(product.id.toString()).child("in_favs").setValue(0).
             addOnSuccessListener {
+                holder.likeImg.setImageResource(R.drawable.ic_unliked)
                 println("Product was removed from favs: $product")
             }
             .addOnFailureListener {
