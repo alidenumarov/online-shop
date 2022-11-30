@@ -19,6 +19,7 @@ class AdapterBucket(private var bucketProducts: ArrayList<Product>) : RecyclerVi
         val curCountET: TextView = itemView.findViewById(R.id.idCurCountET)
         val decreaseCountIV: ImageView = itemView.findViewById(R.id.idImgCountMinus)
         val increaseCountIV: ImageView = itemView.findViewById(R.id.idImgCountPlus)
+        val removeFromBucketTV: TextView = itemView.findViewById(R.id.tvRemoveFromBucket)
 
         lateinit var db : FirebaseDatabase
     }
@@ -61,6 +62,36 @@ class AdapterBucket(private var bucketProducts: ArrayList<Product>) : RecyclerVi
             }
         }
 
+        holder.removeFromBucketTV.setOnClickListener {
+            removeFromBucket(bucketProducts[position], holder.db)
+        }
+
+    }
+
+    private fun removeFromBucket(product : Product, dbRef : FirebaseDatabase): Boolean {
+        var result = true
+        val dbButton = dbRef.getReference("bucket_items")
+        dbButton.child(product.id.toString()).removeValue()
+
+        val dbCategories = dbRef.getReference("categories")
+        dbCategories.child(product.parent_cat_id.toString()).child("products").
+        child(product.id.toString()).child("in_bucket").setValue(0).
+        addOnSuccessListener {
+            println("product was removed from bucket: ${product.id}")
+        }
+            .addOnFailureListener {
+                result = false
+            }
+
+        val dbLike = dbRef.getReference("likes")
+        val a = dbLike.child(product.id.toString()).get()
+        a.addOnSuccessListener { it ->
+            if (it.value != null) {
+                dbLike.child(product.id.toString()).child("in_bucket").setValue(0)
+            }
+        }
+
+        return result
     }
 
     override fun getItemCount() = bucketProducts.size
