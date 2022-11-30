@@ -31,10 +31,9 @@ class ActivityProductDetail : AppCompatActivity() {
         val llm = LinearLayoutManager(this)
         recyclerView.layoutManager = llm
 
-        var listt = arrayListOf<Comment>()
-        listt.add(Comment(id = "11", "eqasdfasdfas fa asdfas f asd f", "Aliden"))
-//        recyclerView.adapter = AdapterComment(getUserData(productDetail.comments!!), this)
-        recyclerView.adapter = AdapterComment(listt, this)
+        if (productDetail.comments != null) {
+            recyclerView.adapter = AdapterComment(getUserData(productDetail.comments!!), this)
+        }
     }
 
     private fun getUserData(commentMap: Map<String, Comment>): ArrayList<Comment> {

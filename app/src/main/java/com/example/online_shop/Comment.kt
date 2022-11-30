@@ -9,9 +9,11 @@ import java.io.Serializable
 data class Comment(
     var id: String? = "",
     var text: String? = "",
-    var author: String? = ""
+    var author: String? = "",
+    var created_date: String? = ""
 ) : Parcelable, Serializable {
     constructor(parcel: Parcel) : this(
+        parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString()
@@ -22,6 +24,7 @@ data class Comment(
         parcel.writeString(id)
         parcel.writeString(text)
         parcel.writeString(author)
+        parcel.writeString(created_date)
     }
 
     override fun describeContents(): Int {

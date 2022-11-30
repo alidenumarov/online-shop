@@ -11,7 +11,7 @@
     <ImageView
         android:id="@+id/idProductDetailIV"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="350dp"
         tools:layout_editor_absoluteX="5dp"
         tools:layout_editor_absoluteY="18dp"
         tools:ignore="MissingConstraints"
@@ -22,7 +22,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="aaaaaaaaaaaaaaaaaaaa"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:text="product desc"
         app:layout_constraintTop_toBottomOf="@+id/idProductDetailIV"
         tools:layout_editor_absoluteX="1dp" />
 

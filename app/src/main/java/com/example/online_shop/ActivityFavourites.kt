@@ -58,7 +58,7 @@ class ActivityFavourites : AppCompatActivity() {
         recFavView = findViewById(R.id.idRVFavourites)
         val llm = LinearLayoutManager(this)
         recFavView.layoutManager = llm
-        recFavView.adapter = AdapterFavourites(favList)
+        recFavView.adapter = AdapterFavourites(favList, this)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -88,10 +88,10 @@ class ActivityFavourites : AppCompatActivity() {
                             favList.add(item.value)
                         }
 
-                        recFavView.adapter = AdapterFavourites(favList)
+                        recFavView.adapter = AdapterFavourites(favList, context)
                     }
                 } else {
-                    handleArrayFunction()
+                    handleArrayFunction(context)
                 }
             }
 
@@ -101,11 +101,11 @@ class ActivityFavourites : AppCompatActivity() {
 
         })
     }
-    private fun handleArrayFunction()  {
+    private fun handleArrayFunction(context: Context)  {
         dbRef = FirebaseDatabase.getInstance().getReference("likes")
         dbRef.get().addOnSuccessListener {
 //            recFavView.adapter = AdapterFavourites(favList)
-            recFavView.adapter = AdapterFavourites(arrayListOf())
+            recFavView.adapter = AdapterFavourites(arrayListOf(), context)
         }
     }
 }

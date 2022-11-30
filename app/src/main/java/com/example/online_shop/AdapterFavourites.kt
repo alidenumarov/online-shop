@@ -1,18 +1,24 @@
 package com.example.online_shop
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
+import java.io.Serializable
 
 
-class AdapterFavourites(private var favs: ArrayList<Product>) : RecyclerView
+class AdapterFavourites(private var favs: ArrayList<Product>,
+                        private val ctx: Context) : RecyclerView
 .Adapter<AdapterFavourites.FavouritesViewHolder>() {
     class FavouritesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val favName: TextView = itemView.findViewById(R.id.tvFavName)
@@ -78,6 +84,18 @@ class AdapterFavourites(private var favs: ArrayList<Product>) : RecyclerView
             imageUrl = "https://resources.cdn-kaspi.kz/shop/medias/sys_master/images/images/h65/h0f/33125684084766/apple-macbook-air-2020-13-3-mgn63-seryj-100797845-1-Container.jpg"
         }
         Picasso.get().load(imageUrl).into(holder.favIV)
+
+        holder.itemView.setOnClickListener { // setting on click listener
+            // for our items of recycler items.
+            val product = favs[position]
+            Toast.makeText(ctx, "Clicked product is " + product.name, Toast.LENGTH_SHORT).show()
+            val intent = Intent(ctx, ActivityProductDetail::class.java)
+            val args = Bundle()
+            args.putSerializable("productDetails", product as Serializable)
+            intent.putExtra("intentProductDetails", args)
+
+            ctx.startActivity(intent)
+        }
     }
 
     override fun getItemCount() = favs.size
