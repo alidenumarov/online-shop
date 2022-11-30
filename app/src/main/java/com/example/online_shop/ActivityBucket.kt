@@ -113,6 +113,8 @@ class ActivityBucket : AppCompatActivity() {
         dbRef = FirebaseDatabase.getInstance().getReference("bucket_items")
         dbRef.get().addOnSuccessListener {
 //            recFavView.adapter = AdapterFavourites(favList)
+            totalCountView.text = "No items yet"
+            totalSumView.text = "0 ₸"
             recBucketProductView.adapter = AdapterBucket(arrayListOf())
         }
     }
