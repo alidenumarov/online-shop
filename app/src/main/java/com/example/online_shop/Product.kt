@@ -1,9 +1,10 @@
 package com.example.online_shop
+import android.os.Parcel
 import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import com.google.firebase.database.IgnoreExtraProperties
 import java.io.Serializable
 
-@Parcelize
+@IgnoreExtraProperties
 data class Product(
     var id: String? = "",
     var name: String? = "",
@@ -14,4 +15,4 @@ data class Product(
     var parent_cat_id: String? = "",
     var image_url: String? = "",
     var comments : Map<String, Comment> ?= null
-) : Parcelable, Serializable
+) : Serializable

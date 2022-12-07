@@ -3,14 +3,26 @@ package com.example.online_shop
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.online_shop.databinding.ActivityBucketBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
+import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_bucket.*
+
 
 class ActivityBucket : AppCompatActivity() {
     private lateinit var bottomNavView: BottomNavigationView
@@ -26,7 +38,6 @@ class ActivityBucket : AppCompatActivity() {
         bottomNavView = findViewById(R.id.bottom_navigation_bucket)
         totalCountView = findViewById(R.id.tvItemCount)
         totalSumView = findViewById(R.id.tvTotalSum)
-
         bottomNavView.selectedItemId = R.id.nav_bucket
 
         bottomNavView.setOnItemSelectedListener { item ->
@@ -61,6 +72,15 @@ class ActivityBucket : AppCompatActivity() {
         val llm = LinearLayoutManager(this)
         recBucketProductView.layoutManager = llm
         recBucketProductView.adapter = AdapterBucket(bucketProductList, this)
+
+        idBuyButton.setOnClickListener {
+            val user = Firebase.auth.currentUser
+            Toast.makeText(this,user?.email.toString(), Toast.LENGTH_LONG).show()
+
+            var bottomFragment = BottomFragment(totalSumView.text.toString());
+            bottomFragment.show(supportFragmentManager, "TAG");
+        }
+
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -98,6 +118,8 @@ class ActivityBucket : AppCompatActivity() {
                         totalCountView.text = "$totalCount"
                         totalSumView.text = "$totalPrice ₸"
                     }
+
+
                 } else {
                     handleArrayFunction(context)
                 }

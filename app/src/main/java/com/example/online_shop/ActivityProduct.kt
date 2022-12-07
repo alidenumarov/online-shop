@@ -35,14 +35,4 @@ class ActivityProduct : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
     }
-
-//    private fun getUserData(productList: ArrayList<Product>): ArrayList<Product> {
-//        val products = arrayListOf<Product>()
-//
-//        for (pr in productList) {
-//            products.add(pr)
-//        }
-//
-//        return products
-//    }
 }
