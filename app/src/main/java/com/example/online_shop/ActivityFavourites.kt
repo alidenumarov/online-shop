@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
+import com.google.firebase.ktx.Firebase
 
 
 class ActivityFavourites : AppCompatActivity() {
@@ -17,6 +19,7 @@ class ActivityFavourites : AppCompatActivity() {
     private lateinit var dbRef : DatabaseReference
     private lateinit var recFavView : RecyclerView
     private lateinit var favList : ArrayList<Product>
+    val userEmail = Firebase.auth.currentUser?.email.toString().replace(".", " ")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,18 +76,23 @@ class ActivityFavourites : AppCompatActivity() {
             @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    val t: GenericTypeIndicator<Map<String, Product>> =
-                        object : GenericTypeIndicator<Map<String, Product>>() {}
+                    val t: GenericTypeIndicator<Map<String, Map<String, Product>>> =
+                        object : GenericTypeIndicator<Map<String, Map<String, Product>>>() {}
 
                     if (snapshot.hasChildren()) {
                         favList = arrayListOf()
-                        val mp = mutableMapOf<String, Product>()
+                        val mp = mutableMapOf<String, Map<String, Product>>()
+                        var mpPr = mutableMapOf<String, Product>()
                         val products = snapshot.getValue(t)
                         products?.forEach { p ->
-                            mp[p.value.id.toString()] = p.value
+                            if (userEmail == p.key) {
+                                println(" ++++++++++ $p")
+                                mpPr = p.value as MutableMap<String, Product>
+                            }
                         }
+
                         // make unique
-                        for (item in mp) {
+                        for (item in mpPr) {
                             favList.add(item.value)
                         }
 

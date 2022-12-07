@@ -15,11 +15,15 @@ class ActivityProduct : AppCompatActivity() {
 
         val intentProducts = intent.getBundleExtra("intentProducts")
         val productList = arrayListOf<Product>()
+        var favList = arrayListOf<Product>()
         var parentCatId = ""
         if (intentProducts != null) {
             val productMap = intentProducts.getSerializable("products") as Map<String, Product>
             for (i in productMap) {
                 productList.add(i.value)
+            }
+            if (intentProducts.getSerializable("favsList") != null) {
+                favList = intentProducts.getSerializable("favsList") as ArrayList<Product>
             }
             val catId = intentProducts.getSerializable("intentParentCategory").toString()
             parentCatId = catId
@@ -28,7 +32,7 @@ class ActivityProduct : AppCompatActivity() {
         val recyclerView: RecyclerView = findViewById(R.id.idProductList)
         val llm = LinearLayoutManager(this)
         recyclerView.layoutManager = llm
-        recyclerView.adapter = AdapterProduct(productList, parentCatId, this)
+        recyclerView.adapter = AdapterProduct(productList, favList, parentCatId, this)
     }
 
     override fun onNewIntent(intent: Intent?) {

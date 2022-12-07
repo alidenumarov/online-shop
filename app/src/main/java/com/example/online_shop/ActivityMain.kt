@@ -1,5 +1,6 @@
 package com.example.online_shop
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,15 +9,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
+import com.google.firebase.ktx.Firebase
 
 
 class ActivityMain : AppCompatActivity() {
 
-    private lateinit var dbRef : DatabaseReference
+    private lateinit var dbCategory : DatabaseReference
     lateinit var categoryRecyclerView: RecyclerView
     lateinit var categoryAdapter: AdapterCategory
     lateinit var categoryArrayList: ArrayList<Category>
+    lateinit var favList : ArrayList<Product>
+//    lateinit var favListLast : ArrayList<Product>
+    val userEmail = Firebase.auth.currentUser?.email.toString().replace(".", " ")
     lateinit var categoryMap: Map<String, Category>
     private lateinit var bottomNavView: BottomNavigationView
 
@@ -57,17 +63,21 @@ class ActivityMain : AppCompatActivity() {
 
         // on below line we are initializing our list
         categoryArrayList = arrayListOf()
+        favList = getLikes(this)
+//        favListLast = arrayListOf()
         categoryMap = mapOf()
 
         // on below line we are creating a variable
         // for our grid layout manager and specifying
         // column count as 2
+        getUserData(this)
+
         val layoutManager = GridLayoutManager(this, 2)
 
         categoryRecyclerView.layoutManager = layoutManager
 
         // on below line we are initializing our adapter
-        categoryAdapter = AdapterCategory(categoryArrayList, this)
+        categoryAdapter = AdapterCategory(categoryArrayList, favList, this)
 
         // on below line we are setting
         // adapter to our recycler view.
@@ -76,7 +86,6 @@ class ActivityMain : AppCompatActivity() {
         categoryAdapter.notifyDataSetChanged()
 
         // on below line we are adding data to our list
-        getUserData(this)
 
     }
 
@@ -86,9 +95,11 @@ class ActivityMain : AppCompatActivity() {
     }
 
     private fun getUserData(context: Context) {
-        dbRef = FirebaseDatabase.getInstance().getReference("categories")
 
-        dbRef.addValueEventListener(object : ValueEventListener{
+
+        dbCategory = FirebaseDatabase.getInstance().getReference("categories")
+
+        dbCategory.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 categoryArrayList = arrayListOf()
                 categoryMap = mapOf()
@@ -101,7 +112,9 @@ class ActivityMain : AppCompatActivity() {
                         categoryArrayList.add(p.value)
                     }
 
-                    categoryRecyclerView.adapter = AdapterCategory(categoryArrayList, context)
+                    println("minaaaaaaaaaaaaau")
+                    println(favList)
+                    categoryRecyclerView.adapter = AdapterCategory(categoryArrayList, favList, context)
                 }
             }
 
@@ -110,5 +123,39 @@ class ActivityMain : AppCompatActivity() {
             }
 
         })
+
+
+
+    }
+
+    private fun getLikes(context: Context): ArrayList<Product> {
+        val list = arrayListOf<Product>()
+        FirebaseDatabase.getInstance().getReference("likes").get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                val t: GenericTypeIndicator<Map<String, Map<String, Product>>> =
+                    object : GenericTypeIndicator<Map<String, Map<String, Product>>>() {}
+
+                if (snapshot.hasChildren()) {
+                    var mpPr = mutableMapOf<String, Product>()
+                    val products = snapshot.getValue(t)
+                    products?.forEach { p ->
+                        if (userEmail == p.key) {
+                            mpPr = p.value as MutableMap<String, Product>
+                            println(" ++++++++++ $mpPr")
+                        }
+                    }
+
+                    // make unique
+                    for (item in mpPr) {
+                        list.add(item.value)
+                    }
+//                    favListLast = favList
+                    println(" ---------------- $list")
+
+                }
+            }
+        }
+
+        return list
     }
 }

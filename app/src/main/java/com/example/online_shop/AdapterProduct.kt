@@ -12,11 +12,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import java.io.Serializable
 
 class AdapterProduct(private val products: ArrayList<Product>,
+                     private var favList: ArrayList<Product>,
                      var parentCatId: String,
                      private val ctx: Context,
 ) : RecyclerView.Adapter<AdapterProduct.ProductViewHolder>() {
@@ -28,7 +31,7 @@ class AdapterProduct(private val products: ArrayList<Product>,
         val toBucketBtn : Button = itemView.findViewById(R.id.btnToBucketFromProduct)
         val likeImg : ImageView = itemView.findViewById(R.id.imgLikeProduct)
         lateinit var db : FirebaseDatabase
-
+        val userEmail = Firebase.auth.currentUser?.email.toString().replace(".", " ")
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
@@ -47,22 +50,34 @@ class AdapterProduct(private val products: ArrayList<Product>,
         }
         Picasso.get().load(imageUrl).into(holder.productIV)
 
-        if (products[position].in_favs == 1) {
-            holder.likeImg.setImageResource(R.drawable.ic_liked)
-        } else {
+        var inFavs = false
+        for (item in favList) {
+            if (item.id == products[position].id) {
+                inFavs = true
+                holder.likeImg.setImageResource(R.drawable.ic_liked)
+                break
+            }
+        }
+        if (!inFavs) {
             holder.likeImg.setImageResource(R.drawable.ic_unliked)
         }
 
-        if (products[position].in_bucket == 1) {
-            holder.toBucketBtn.text = "remove from bucket".uppercase()
-        } else {
+        var inBuket = false
+        for (email in products[position].in_bucket!!) {
+            if (email == holder.userEmail) {
+                inBuket = true
+                holder.toBucketBtn.text = "remove from bucket".uppercase()
+                break
+            }
+        }
+        if (!inBuket) {
             holder.toBucketBtn.text = "to bucket".uppercase()
         }
 
         holder.toBucketBtn.setOnClickListener {
             val product = products[position]
             holder.db = FirebaseDatabase.getInstance()
-            val res = addOrRemoveInBucket(product, holder.db)
+            val res = addOrRemoveInBucket(product, holder)
             if (res) {
                 val btnTxt = holder.toBucketBtn.text
                 if (btnTxt.toString().uppercase() == "to bucket".uppercase()) {
@@ -76,7 +91,14 @@ class AdapterProduct(private val products: ArrayList<Product>,
         holder.likeImg.setOnClickListener{
             holder.db = FirebaseDatabase.getInstance()
             val product = products[position]
-            addOrRemoveInFavs(product, holder.db, holder)
+            val res = addOrRemoveInFavs(product, holder)
+            if (res) {
+                if (holder.likeImg.id == R.drawable.ic_unliked) {
+                    holder.likeImg.setImageResource(R.drawable.ic_unliked)
+                } else {
+                    holder.likeImg.setImageResource(R.drawable.ic_liked)
+                }
+            }
         }
 
         holder.itemView.setOnClickListener { // setting on click listener
@@ -94,88 +116,97 @@ class AdapterProduct(private val products: ArrayList<Product>,
 
     override fun getItemCount() = products.size
 
-    private fun addOrRemoveInFavs(product : Product, dbRef : FirebaseDatabase, holder : AdapterProduct.ProductViewHolder): Boolean {
+    private fun addOrRemoveInFavs(product : Product, holder : ProductViewHolder): Boolean {
+
+        var inFavs = false
+        for (item in favList) {
+            if (item.id == product.id) {
+                inFavs = true
+            }
+        }
         var result = true
-        if (product.in_favs == 0) {
-            val dbLike = dbRef.getReference("likes")
-            product.in_favs = 1
+
+        if (!inFavs) {
+            val dbLike = holder.db.getReference("likes")
             product.parent_cat_id = parentCatId
-            dbLike.child(product.id.toString()).setValue(product)
-
-            val dbCategories = dbRef.getReference("categories")
-
-            dbCategories.child(parentCatId).child("products").
-            child(product.id.toString()).child("in_favs").setValue(1).
-            addOnSuccessListener {
-                holder.likeImg.setImageResource(R.drawable.ic_liked)
-                println("Product was added to favs: $product")
-            }
-            .addOnFailureListener {
-                result = false
-            }
+            dbLike.child(holder.userEmail).child(product.id.toString()).setValue(product)
+            favList.add(product)
         } else {
-            val dbLike = dbRef.getReference("likes")
-            dbLike.child(product.id.toString()).removeValue()
-
-            val dbCategories = dbRef.getReference("categories")
-
-            dbCategories.child(parentCatId).child("products").
-            child(product.id.toString()).child("in_favs").setValue(0).
-            addOnSuccessListener {
-                holder.likeImg.setImageResource(R.drawable.ic_unliked)
-                println("Product was removed from favs: $product")
+            val dbLike = holder.db.getReference("likes")
+            dbLike.child(holder.userEmail).child(product.id.toString()).removeValue()
+            val newFavList = arrayListOf<Product>()
+            for (item in favList) {
+                if (item.id != product.id) {
+                    newFavList
+                }
             }
-            .addOnFailureListener {
-                result = false
-            }
-
+            favList = newFavList
         }
 
         return result
     }
 
-    private fun addOrRemoveInBucket(product : Product, dbRef : FirebaseDatabase): Boolean {
+    private fun addOrRemoveInBucket(product : Product, holder : ProductViewHolder): Boolean {
+        var inBucketList = arrayListOf<String>()
+        var inBucket = false
+        for (email in product.in_bucket!!) {
+            if (email == holder.userEmail) {
+                inBucket = true
+            } else {
+                inBucketList.add(email)
+            }
+        }
+        if (!inBucket) {
+            inBucketList.add(holder.userEmail)
+        }
+
+
+
         var result = true
-        if (product.in_bucket == 0) {
-            val dbBucket = dbRef.getReference("bucket_items")
-            product.in_bucket = 1
+        if (!inBucket) {
+            val dbBucket = holder.db.getReference("bucket_items")
+//            product.in_bucket = 1
             product.parent_cat_id = parentCatId
-            dbBucket.child(product.id.toString()).setValue(product)
+            dbBucket.child(holder.userEmail).child(product.id.toString()).setValue(product)
 
-            val dbCategories = dbRef.getReference("categories")
-
+            val dbCategories = holder.db.getReference("categories")
             dbCategories.child(parentCatId).child("products").
-            child(product.id.toString()).child("in_bucket").setValue(1).
+            child(product.id.toString()).child("in_bucket").setValue(inBucketList).
             addOnSuccessListener {
+                product.in_bucket = inBucketList
                 println("product was added to bucket: $product")
             }
-                .addOnFailureListener {
-                    result = false
-                }
+            .addOnFailureListener {
+                result = false
+            }
 
-            val dbLike = dbRef.getReference("likes")
-            val a = dbLike.child(product.id.toString()).get()
+            val dbLike = holder.db.getReference("likes")
+            val a = dbLike.child(holder.userEmail).child(product.id.toString()).get()
             a.addOnSuccessListener { it ->
                 if (it.value != null) {
-                    dbLike.child(product.id.toString()).child("in_bucket").setValue(1)
+                    dbLike.child(holder.userEmail).child(product.id.toString()).child("in_bucket").setValue(inBucketList)
                 }
             }
 
 
         } else {
-            val dbLike = dbRef.getReference("bucket_items")
-            dbLike.child(product.id.toString()).removeValue()
+            val dbLike = holder.db.getReference("bucket_items")
+            if (inBucketList.size == 0) {
+                dbLike.child(holder.userEmail).child(product.id.toString()).removeValue()
+            } else {
+                dbLike.child(holder.userEmail).child(product.id.toString()).child("in_bucket").setValue(inBucketList)
+            }
 
-            val dbCategories = dbRef.getReference("categories")
-
+            val dbCategories = holder.db.getReference("categories")
             dbCategories.child(parentCatId).child("products").
-            child(product.id.toString()).child("in_bucket").setValue(0).
+            child(product.id.toString()).child("in_bucket").setValue(inBucketList).
             addOnSuccessListener {
+                product.in_bucket = inBucketList
                 println("product was removed from bucket: $product")
             }
-                .addOnFailureListener {
-                    result = false
-                }
+            .addOnFailureListener {
+                result = false
+            }
 
         }
 
