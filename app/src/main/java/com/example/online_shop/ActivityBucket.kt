@@ -78,7 +78,7 @@ class ActivityBucket : AppCompatActivity() {
             Toast.makeText(this,user?.email.toString(), Toast.LENGTH_LONG).show()
 
             var bottomFragment = BottomFragment(totalSumView.text.toString());
-            bottomFragment.show(supportFragmentManager, "TAG");
+            bottomFragment.show(supportFragmentManager, "TAG")
         }
 
     }

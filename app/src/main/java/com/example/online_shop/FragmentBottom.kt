@@ -32,14 +32,12 @@ class BottomFragment(totalSum : String): BottomSheetDialogFragment() {
         btnPayNow.setOnClickListener {
             val user = Firebase.auth.currentUser
             Toast.makeText(requireContext(),user?.email.toString(), Toast.LENGTH_LONG).show()
-
-
             if(cardNumber.text.trim().toString().isNotEmpty() && holderName.text.trim().toString().isNotEmpty()
                 && cvv.text.trim().toString().isNotEmpty()){
                 var userName = cardNumber.text.trim().toString();
-                Toast.makeText(requireContext(),userName, Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Successfully Paid!", Toast.LENGTH_LONG).show()
 //                startActivity(Intent(requireContext(), ItemActivity::class.java).putExtra("data",userName))
-//                dismiss()
+                dismiss()
             }else{
                 Toast.makeText(requireContext(),"All Fields Are Required", Toast.LENGTH_LONG).show()
             }
