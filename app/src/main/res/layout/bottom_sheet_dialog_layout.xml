@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
             android:hint="card number"
-            android:maxLength="20"
+            android:maxLength="16"
             android:layout_gravity="center_vertical"
             android:padding="8dp"/>
     </LinearLayout>
@@ -73,6 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="CVV"
+            android:maxLength="3"
             android:inputType="numberPassword"
             android:layout_gravity="center_vertical"
             android:padding="8dp"/>

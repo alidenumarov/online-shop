@@ -1,6 +1,5 @@
 package com.example.online_shop
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -20,8 +19,8 @@ class ActivityMain : AppCompatActivity() {
     lateinit var categoryRecyclerView: RecyclerView
     lateinit var categoryAdapter: AdapterCategory
     lateinit var categoryArrayList: ArrayList<Category>
-    lateinit var favList : ArrayList<Product>
-//    lateinit var favListLast : ArrayList<Product>
+    lateinit var favsList : ArrayList<Product>
+    lateinit var inBucketList : ArrayList<Product>
     val userEmail = Firebase.auth.currentUser?.email.toString().replace(".", " ")
     lateinit var categoryMap: Map<String, Category>
     private lateinit var bottomNavView: BottomNavigationView
@@ -63,8 +62,8 @@ class ActivityMain : AppCompatActivity() {
 
         // on below line we are initializing our list
         categoryArrayList = arrayListOf()
-        favList = getLikes(this)
-//        favListLast = arrayListOf()
+        favsList = getItems("likes")
+        inBucketList = getItems("bucket_items")
         categoryMap = mapOf()
 
         // on below line we are creating a variable
@@ -77,7 +76,7 @@ class ActivityMain : AppCompatActivity() {
         categoryRecyclerView.layoutManager = layoutManager
 
         // on below line we are initializing our adapter
-        categoryAdapter = AdapterCategory(categoryArrayList, favList, this)
+        categoryAdapter = AdapterCategory(categoryArrayList, favsList, inBucketList, this)
 
         // on below line we are setting
         // adapter to our recycler view.
@@ -112,9 +111,7 @@ class ActivityMain : AppCompatActivity() {
                         categoryArrayList.add(p.value)
                     }
 
-                    println("minaaaaaaaaaaaaau")
-                    println(favList)
-                    categoryRecyclerView.adapter = AdapterCategory(categoryArrayList, favList, context)
+                    categoryRecyclerView.adapter = AdapterCategory(categoryArrayList, favsList, inBucketList, context)
                 }
             }
 
@@ -128,9 +125,9 @@ class ActivityMain : AppCompatActivity() {
 
     }
 
-    private fun getLikes(context: Context): ArrayList<Product> {
+    private fun getItems(path: String): ArrayList<Product> {
         val list = arrayListOf<Product>()
-        FirebaseDatabase.getInstance().getReference("likes").get().addOnSuccessListener { snapshot ->
+        FirebaseDatabase.getInstance().getReference(path).get().addOnSuccessListener { snapshot ->
             if (snapshot.exists()) {
                 val t: GenericTypeIndicator<Map<String, Map<String, Product>>> =
                     object : GenericTypeIndicator<Map<String, Map<String, Product>>>() {}
@@ -149,7 +146,6 @@ class ActivityMain : AppCompatActivity() {
                     for (item in mpPr) {
                         list.add(item.value)
                     }
-//                    favListLast = favList
                     println(" ---------------- $list")
 
                 }
@@ -158,4 +154,5 @@ class ActivityMain : AppCompatActivity() {
 
         return list
     }
+
 }

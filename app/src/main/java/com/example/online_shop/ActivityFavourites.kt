@@ -19,6 +19,7 @@ class ActivityFavourites : AppCompatActivity() {
     private lateinit var dbRef : DatabaseReference
     private lateinit var recFavView : RecyclerView
     private lateinit var favList : ArrayList<Product>
+    private lateinit var inBucketList : ArrayList<Product>
     val userEmail = Firebase.auth.currentUser?.email.toString().replace(".", " ")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,12 +57,13 @@ class ActivityFavourites : AppCompatActivity() {
             }
         }
         favList = arrayListOf()
+        inBucketList = getItems("bucket_items")
         getUserData(this)
 
         recFavView = findViewById(R.id.idRVFavourites)
         val llm = LinearLayoutManager(this)
         recFavView.layoutManager = llm
-        recFavView.adapter = AdapterFavourites(favList, this)
+        recFavView.adapter = AdapterFavourites(favList, inBucketList , this)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -81,12 +83,10 @@ class ActivityFavourites : AppCompatActivity() {
 
                     if (snapshot.hasChildren()) {
                         favList = arrayListOf()
-                        val mp = mutableMapOf<String, Map<String, Product>>()
                         var mpPr = mutableMapOf<String, Product>()
                         val products = snapshot.getValue(t)
                         products?.forEach { p ->
                             if (userEmail == p.key) {
-                                println(" ++++++++++ $p")
                                 mpPr = p.value as MutableMap<String, Product>
                             }
                         }
@@ -96,7 +96,7 @@ class ActivityFavourites : AppCompatActivity() {
                             favList.add(item.value)
                         }
 
-                        recFavView.adapter = AdapterFavourites(favList, context)
+                        recFavView.adapter = AdapterFavourites(favList, inBucketList, context)
                     }
                 } else {
                     handleArrayFunction(context)
@@ -109,11 +109,41 @@ class ActivityFavourites : AppCompatActivity() {
 
         })
     }
+
+    private fun getItems(path: String): ArrayList<Product> {
+        val list = arrayListOf<Product>()
+        FirebaseDatabase.getInstance().getReference(path).get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                val t: GenericTypeIndicator<Map<String, Map<String, Product>>> =
+                    object : GenericTypeIndicator<Map<String, Map<String, Product>>>() {}
+
+                if (snapshot.hasChildren()) {
+                    var mpPr = mutableMapOf<String, Product>()
+                    val products = snapshot.getValue(t)
+                    products?.forEach { p ->
+                        if (userEmail == p.key) {
+                            mpPr = p.value as MutableMap<String, Product>
+                            println(" ++++++++++ $mpPr")
+                        }
+                    }
+
+                    // make unique
+                    for (item in mpPr) {
+                        list.add(item.value)
+                    }
+                    println(" ---------------- $list")
+
+                }
+            }
+        }
+
+        return list
+    }
     private fun handleArrayFunction(context: Context)  {
         dbRef = FirebaseDatabase.getInstance().getReference("likes")
         dbRef.get().addOnSuccessListener {
 //            recFavView.adapter = AdapterFavourites(favList)
-            recFavView.adapter = AdapterFavourites(arrayListOf(), context)
+            recFavView.adapter = AdapterFavourites(arrayListOf(), inBucketList, context)
         }
     }
 }

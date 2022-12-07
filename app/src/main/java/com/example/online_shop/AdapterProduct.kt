@@ -20,6 +20,7 @@ import java.io.Serializable
 
 class AdapterProduct(private val products: ArrayList<Product>,
                      private var favList: ArrayList<Product>,
+                     private var inBucketList: ArrayList<Product>,
                      var parentCatId: String,
                      private val ctx: Context,
 ) : RecyclerView.Adapter<AdapterProduct.ProductViewHolder>() {
@@ -63,8 +64,8 @@ class AdapterProduct(private val products: ArrayList<Product>,
         }
 
         var inBuket = false
-        for (email in products[position].in_bucket!!) {
-            if (email == holder.userEmail) {
+        for (item in inBucketList) {
+            if (item.id == products[position].id) {
                 inBuket = true
                 holder.toBucketBtn.text = "remove from bucket".uppercase()
                 break
@@ -93,11 +94,9 @@ class AdapterProduct(private val products: ArrayList<Product>,
             val product = products[position]
             val res = addOrRemoveInFavs(product, holder)
             if (res) {
-                if (holder.likeImg.id == R.drawable.ic_unliked) {
-                    holder.likeImg.setImageResource(R.drawable.ic_unliked)
-                } else {
-                    holder.likeImg.setImageResource(R.drawable.ic_liked)
-                }
+                holder.likeImg.setImageResource(R.drawable.ic_liked)
+            } else {
+                holder.likeImg.setImageResource(R.drawable.ic_unliked)
             }
         }
 
@@ -117,97 +116,62 @@ class AdapterProduct(private val products: ArrayList<Product>,
     override fun getItemCount() = products.size
 
     private fun addOrRemoveInFavs(product : Product, holder : ProductViewHolder): Boolean {
-
         var inFavs = false
         for (item in favList) {
             if (item.id == product.id) {
                 inFavs = true
             }
         }
-        var result = true
-
         if (!inFavs) {
             val dbLike = holder.db.getReference("likes")
             product.parent_cat_id = parentCatId
             dbLike.child(holder.userEmail).child(product.id.toString()).setValue(product)
             favList.add(product)
+            inFavs = true
+            println("product was added to favs: $product")
         } else {
             val dbLike = holder.db.getReference("likes")
             dbLike.child(holder.userEmail).child(product.id.toString()).removeValue()
             val newFavList = arrayListOf<Product>()
             for (item in favList) {
                 if (item.id != product.id) {
-                    newFavList
+                    newFavList.add(item)
                 }
             }
             favList = newFavList
+            inFavs = false
+            println("product was removed from favs: $product")
         }
 
-        return result
+        return inFavs
     }
 
     private fun addOrRemoveInBucket(product : Product, holder : ProductViewHolder): Boolean {
-        var inBucketList = arrayListOf<String>()
         var inBucket = false
-        for (email in product.in_bucket!!) {
-            if (email == holder.userEmail) {
+        for (item in inBucketList) {
+            if (item.id == product.id) {
                 inBucket = true
-            } else {
-                inBucketList.add(email)
             }
         }
+        val result = true
+
         if (!inBucket) {
-            inBucketList.add(holder.userEmail)
-        }
-
-
-
-        var result = true
-        if (!inBucket) {
-            val dbBucket = holder.db.getReference("bucket_items")
-//            product.in_bucket = 1
+            val dbLike = holder.db.getReference("bucket_items")
             product.parent_cat_id = parentCatId
-            dbBucket.child(holder.userEmail).child(product.id.toString()).setValue(product)
-
-            val dbCategories = holder.db.getReference("categories")
-            dbCategories.child(parentCatId).child("products").
-            child(product.id.toString()).child("in_bucket").setValue(inBucketList).
-            addOnSuccessListener {
-                product.in_bucket = inBucketList
-                println("product was added to bucket: $product")
-            }
-            .addOnFailureListener {
-                result = false
-            }
-
-            val dbLike = holder.db.getReference("likes")
-            val a = dbLike.child(holder.userEmail).child(product.id.toString()).get()
-            a.addOnSuccessListener { it ->
-                if (it.value != null) {
-                    dbLike.child(holder.userEmail).child(product.id.toString()).child("in_bucket").setValue(inBucketList)
-                }
-            }
-
-
+            dbLike.child(holder.userEmail).child(product.id.toString()).setValue(product)
+            inBucketList.add(product)
+            println("product was added to bucket: $product")
         } else {
             val dbLike = holder.db.getReference("bucket_items")
-            if (inBucketList.size == 0) {
-                dbLike.child(holder.userEmail).child(product.id.toString()).removeValue()
-            } else {
-                dbLike.child(holder.userEmail).child(product.id.toString()).child("in_bucket").setValue(inBucketList)
+            dbLike.child(holder.userEmail).child(product.id.toString()).removeValue()
+            val newBucketItemList = arrayListOf<Product>()
+            for (item in inBucketList) {
+                if (item.id != product.id) {
+                    newBucketItemList.add(item)
+                }
             }
-
-            val dbCategories = holder.db.getReference("categories")
-            dbCategories.child(parentCatId).child("products").
-            child(product.id.toString()).child("in_bucket").setValue(inBucketList).
-            addOnSuccessListener {
-                product.in_bucket = inBucketList
-                println("product was removed from bucket: $product")
-            }
-            .addOnFailureListener {
-                result = false
-            }
-
+            inBucketList = newBucketItemList
+            println("product was removed from bucket: $product")
         }
 
         return result

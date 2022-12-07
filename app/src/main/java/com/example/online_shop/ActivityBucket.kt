@@ -4,20 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextUtils
-import android.text.TextWatcher
-import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.online_shop.databinding.ActivityBucketBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
@@ -31,6 +23,7 @@ class ActivityBucket : AppCompatActivity() {
     private lateinit var dbRef : DatabaseReference
     private lateinit var recBucketProductView : RecyclerView
     private lateinit var bucketProductList : ArrayList<Product>
+    val userEmail = Firebase.auth.currentUser?.email.toString().replace(".", " ")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,11 +66,11 @@ class ActivityBucket : AppCompatActivity() {
         recBucketProductView.layoutManager = llm
         recBucketProductView.adapter = AdapterBucket(bucketProductList, this)
 
-        idBuyButton.setOnClickListener {
-            val user = Firebase.auth.currentUser
-            Toast.makeText(this,user?.email.toString(), Toast.LENGTH_LONG).show()
+        idContinueBtn.setOnClickListener {
 
-            var bottomFragment = BottomFragment(totalSumView.text.toString());
+            Toast.makeText(this, "Enter Card Data", Toast.LENGTH_LONG).show()
+
+            var bottomFragment = BottomFragment(totalSumView.text.toString(), this)
             bottomFragment.show(supportFragmentManager, "TAG")
         }
 
@@ -95,20 +88,22 @@ class ActivityBucket : AppCompatActivity() {
             @SuppressLint("SetTextI18n")
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    val t: GenericTypeIndicator<Map<String, Product>> =
-                        object : GenericTypeIndicator<Map<String, Product>>() {}
+                    val t: GenericTypeIndicator<Map<String, Map<String, Product>>> =
+                        object : GenericTypeIndicator<Map<String, Map<String, Product>>>() {}
 
                     var totalPrice = 0
                     var totalCount = 0
                     if (snapshot.hasChildren()) {
                         bucketProductList = arrayListOf()
-                        val mp = mutableMapOf<String, Product>()
+                        var mpPr = mutableMapOf<String, Product>()
                         val products = snapshot.getValue(t)
                         products?.forEach { p ->
-                            mp[p.value.id.toString()] = p.value
+                            if (userEmail == p.key) {
+                                mpPr = p.value as MutableMap<String, Product>
+                            }
                         }
                         // make unique
-                        for (item in mp) {
+                        for (item in mpPr) {
                             bucketProductList.add(item.value)
                             totalPrice += item.value.price!! * item.value.count_in_bucket!!
                             totalCount += item.value.count_in_bucket!!

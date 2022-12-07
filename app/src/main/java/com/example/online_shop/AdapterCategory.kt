@@ -18,6 +18,7 @@ class AdapterCategory(
     // on below line we are passing variables as category list and context
     private val categoryList: ArrayList<Category>,
     private val favsList: ArrayList<Product>,
+    private val inBucketList: ArrayList<Product>,
     private val context: Context,
 ) : RecyclerView.Adapter<AdapterCategory.CategoryViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int
@@ -49,11 +50,10 @@ class AdapterCategory(
             Toast.makeText(context, "Clicked category is " + categoryName, Toast.LENGTH_SHORT).show()
             val intent = Intent(context, ActivityProduct::class.java)
             val args = Bundle()
-            println("ffffffffffffffffff")
-            println(favsList)
             if (products != null) {
                 args.putSerializable("products", products as Serializable)
                 args.putSerializable("favsList", favsList as Serializable)
+                args.putSerializable("inBucketList", inBucketList as Serializable)
                 args.putSerializable("intentParentCategory", categoryList[position].id)
                 intent.putExtra("intentProducts", args)
             }
