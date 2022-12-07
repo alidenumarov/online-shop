@@ -94,7 +94,7 @@
             android:textSize="24dp"
             android:textColor="@color/black"
             android:textAlignment="center"
-            android:text="To Pay: 1234 t"/>
+            android:text="To Pay: 1234 ₸"/>
     </LinearLayout>
 
 
