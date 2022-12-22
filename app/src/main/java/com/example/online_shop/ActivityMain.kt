@@ -22,7 +22,6 @@ class ActivityMain : AppCompatActivity() {
     lateinit var favsList : ArrayList<Product>
     lateinit var inBucketList : ArrayList<Product>
     val userEmail = Firebase.auth.currentUser?.email.toString().replace(".", " ")
-    lateinit var categoryMap: Map<String, Category>
     private lateinit var bottomNavView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +49,12 @@ class ActivityMain : AppCompatActivity() {
                     startActivity(intent)
                     return@setOnItemSelectedListener true
                 }
+                R.id.nav_my_orders -> {
+                    Toast.makeText(this, "from My Orders", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, ActivityMyOrders::class.java)
+                    startActivity(intent)
+                    return@setOnItemSelectedListener true
+                }
                 else -> {
                     return@setOnItemSelectedListener false
                 }
@@ -64,7 +69,6 @@ class ActivityMain : AppCompatActivity() {
         categoryArrayList = arrayListOf()
         favsList = getItems("likes")
         inBucketList = getItems("bucket_items")
-        categoryMap = mapOf()
 
         // on below line we are creating a variable
         // for our grid layout manager and specifying
@@ -101,7 +105,6 @@ class ActivityMain : AppCompatActivity() {
         dbCategory.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 categoryArrayList = arrayListOf()
-                categoryMap = mapOf()
 
                 if (snapshot.exists()) {
                     val t: GenericTypeIndicator<Map<String, Category>> =
@@ -138,7 +141,6 @@ class ActivityMain : AppCompatActivity() {
                     products?.forEach { p ->
                         if (userEmail == p.key) {
                             mpPr = p.value as MutableMap<String, Product>
-                            println(" ++++++++++ $mpPr")
                         }
                     }
 
@@ -146,7 +148,6 @@ class ActivityMain : AppCompatActivity() {
                     for (item in mpPr) {
                         list.add(item.value)
                     }
-                    println(" ---------------- $list")
 
                 }
             }

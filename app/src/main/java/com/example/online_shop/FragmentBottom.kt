@@ -1,26 +1,36 @@
 package com.example.online_shop
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.bottom_sheet_dialog_layout.view.*
+import java.util.*
+import java.util.concurrent.ThreadLocalRandom
+import kotlin.streams.asSequence
 
-class BottomFragment(totalSum : String, ctx: Context): BottomSheetDialogFragment() {
+class BottomFragment(totalSum : String,
+                     products : ArrayList<Product>,
+                     orders : ArrayList<MyOrder>,
+                     ctx: Context): BottomSheetDialogFragment() {
 
     private val displaySum = totalSum
+    private val productList = products
+    private var orderList = orders
     lateinit var db : FirebaseDatabase
     private val userEmail = Firebase.auth.currentUser?.email.toString().replace(".", " ")
     val ctxt = ctx
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,7 +44,6 @@ class BottomFragment(totalSum : String, ctx: Context): BottomSheetDialogFragment
         val toPayTV = view.idToPayInDialog
         toPayTV.text = "To Pay: $displaySum"
         db = FirebaseDatabase.getInstance()
-
 
         btnPayNow.setOnClickListener {
             if(cardNumber.text.trim().toString().isNotEmpty() && holderName.text.trim().toString().isNotEmpty()
@@ -64,8 +73,27 @@ class BottomFragment(totalSum : String, ctx: Context): BottomSheetDialogFragment
                     builder.setPositiveButton("Ok"){dialogInterface, which ->
                         Toast.makeText(ctxt,"clicked Ok",Toast.LENGTH_LONG).show()
                         // delete items from bucket
-                        val dbButton = db.getReference("bucket_items")
-                        dbButton.child(userEmail).removeValue()
+                        val dbBucketItems = db.getReference("bucket_items")
+                        dbBucketItems.child(userEmail).removeValue()
+
+                        // saving orders
+                        val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+
+                        val orderNumber = ThreadLocalRandom.current()
+                            .ints(8, 0, charPool.size)
+                            .asSequence()
+                            .map(charPool::get)
+                            .joinToString("")
+
+                        val order = MyOrder(id = orderNumber,
+                            orderNumber = orderNumber,
+                            status = "Waiting",
+                            products = productList)
+                        orderList.add(order)
+
+                        val dbMyOrders = db.getReference("my_orders")
+                        dbMyOrders.child(userEmail).setValue(orderList)
+
                         dismiss()
                     }
                     //performing cancel action

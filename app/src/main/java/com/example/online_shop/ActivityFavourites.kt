@@ -51,6 +51,12 @@ class ActivityFavourites : AppCompatActivity() {
                     startActivity(intent)
                     return@setOnItemSelectedListener true
                 }
+                R.id.nav_my_orders -> {
+                    Toast.makeText(this, "from My Orders", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, ActivityMyOrders::class.java)
+                    startActivity(intent)
+                    return@setOnItemSelectedListener true
+                }
                 else -> {
                     return@setOnItemSelectedListener false
                 }
@@ -123,7 +129,6 @@ class ActivityFavourites : AppCompatActivity() {
                     products?.forEach { p ->
                         if (userEmail == p.key) {
                             mpPr = p.value as MutableMap<String, Product>
-                            println(" ++++++++++ $mpPr")
                         }
                     }
 
@@ -131,7 +136,6 @@ class ActivityFavourites : AppCompatActivity() {
                     for (item in mpPr) {
                         list.add(item.value)
                     }
-                    println(" ---------------- $list")
 
                 }
             }

@@ -35,7 +35,7 @@ class AdapterCategory(
         return CategoryViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: AdapterCategory.CategoryViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         // on below line we are setting data to our text view and our image view.
         val categoryName = categoryList[position].name
         holder.categoryNameTV.text = categoryName

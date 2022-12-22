@@ -13,4 +13,8 @@
         android:id="@+id/nav_bucket"
         android:icon="@drawable/ic_cart_svgrepo_com"
         android:title="Bucket" />
+    <item
+        android:id="@+id/nav_my_orders"
+        android:icon="@drawable/ic_my_orders_list"
+        android:title="My Orders" />
 </menu>

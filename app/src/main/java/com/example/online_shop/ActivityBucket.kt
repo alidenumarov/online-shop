@@ -23,6 +23,7 @@ class ActivityBucket : AppCompatActivity() {
     private lateinit var dbRef : DatabaseReference
     private lateinit var recBucketProductView : RecyclerView
     private lateinit var bucketProductList : ArrayList<Product>
+    private lateinit var myOrdersList : ArrayList<MyOrder>
     val userEmail = Firebase.auth.currentUser?.email.toString().replace(".", " ")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,13 +54,21 @@ class ActivityBucket : AppCompatActivity() {
                     startActivity(intent)
                     return@setOnItemSelectedListener true
                 }
+                R.id.nav_my_orders -> {
+                    Toast.makeText(this, "from My Orders", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, ActivityMyOrders::class.java)
+                    startActivity(intent)
+                    return@setOnItemSelectedListener true
+                }
                 else -> {
                     return@setOnItemSelectedListener false
                 }
             }
         }
         bucketProductList = arrayListOf()
+        myOrdersList = arrayListOf()
         getUserData(this)
+        getMyOrders()
 
         recBucketProductView = findViewById(R.id.idRVBucketItems)
         val llm = LinearLayoutManager(this)
@@ -70,7 +79,7 @@ class ActivityBucket : AppCompatActivity() {
 
             Toast.makeText(this, "Enter Card Data", Toast.LENGTH_LONG).show()
 
-            var bottomFragment = BottomFragment(totalSumView.text.toString(), this)
+            var bottomFragment = BottomFragment(totalSumView.text.toString(), bucketProductList, myOrdersList, this)
             bottomFragment.show(supportFragmentManager, "TAG")
         }
 
@@ -126,6 +135,32 @@ class ActivityBucket : AppCompatActivity() {
 
         })
     }
+
+    private fun getMyOrders() {
+        dbRef = FirebaseDatabase.getInstance().getReference("my_orders").child(userEmail)
+
+        dbRef.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                myOrdersList = arrayListOf()
+
+                if (snapshot.exists()) {
+                    val t: GenericTypeIndicator<ArrayList<MyOrder>> =
+                        object : GenericTypeIndicator<ArrayList<MyOrder>>() {}
+                    val myOrders = snapshot.getValue(t)
+                    if (myOrders != null) {
+                        myOrdersList = myOrders
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+
     private fun handleArrayFunction(context: Context)  {
         dbRef = FirebaseDatabase.getInstance().getReference("bucket_items")
         dbRef.get().addOnSuccessListener {
