@@ -29,6 +29,9 @@ class AdapterOrderDetails(private val products: ArrayList<Product>,
         val productIV: ImageView = itemView.findViewById(R.id.idODProductImgUrl)
         lateinit var db : FirebaseDatabase
         val userEmail = Firebase.auth.currentUser?.email.toString().replace(".", " ")
+
+
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderDetailViewHolder {
