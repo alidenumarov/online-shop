@@ -22,7 +22,7 @@
             android:id="@+id/idCardNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
+            android:inputType="numberSigned"
             android:hint="card number"
             android:maxLength="16"
             android:layout_gravity="center_vertical"
