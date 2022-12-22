@@ -79,14 +79,13 @@ class BottomFragment(totalSum : String,
                         // saving orders
                         val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
-                        val orderNumber = ThreadLocalRandom.current()
+                        val orderId = ThreadLocalRandom.current()
                             .ints(8, 0, charPool.size)
                             .asSequence()
                             .map(charPool::get)
                             .joinToString("")
 
-                        val order = MyOrder(id = orderNumber,
-                            orderNumber = orderNumber,
+                        val order = MyOrder(id = orderId,
                             status = "Waiting",
                             products = productList)
                         orderList.add(order)

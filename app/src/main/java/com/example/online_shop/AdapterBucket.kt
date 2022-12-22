@@ -72,7 +72,7 @@ class AdapterBucket(private var bucketProducts: ArrayList<Product>,
         }
 
         holder.removeFromBucketTV.setOnClickListener {
-            removeFromBucket(bucketProducts[position], holder.db)
+            removeFromBucket(bucketProducts[position], holder.db, holder.userEmail)
         }
 
         holder.itemView.setOnClickListener { // setting on click listener
@@ -89,10 +89,10 @@ class AdapterBucket(private var bucketProducts: ArrayList<Product>,
 
     }
 
-    private fun removeFromBucket(product : Product, dbRef : FirebaseDatabase): Boolean {
+    private fun removeFromBucket(product : Product, dbRef : FirebaseDatabase, userEmail : String): Boolean {
         var result = true
         val dbButton = dbRef.getReference("bucket_items")
-        dbButton.child(product.id.toString()).removeValue()
+        dbButton.child(userEmail).child(product.id.toString()).removeValue()
 
         val dbCategories = dbRef.getReference("categories")
         dbCategories.child(product.parent_cat_id.toString()).child("products").

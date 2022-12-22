@@ -11,7 +11,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
 import java.io.Serializable
 
 
@@ -32,45 +31,38 @@ class AdapterMyOrders(
     }
 
     override fun onBindViewHolder(holder: MyOrdersViewHolder, position: Int) {
-        val orderNumber = myOrdersList[position].orderNumber
-        holder.orderNumberTV.text = "Number: $orderNumber"
-
-        val orderStatus = myOrdersList[position].status
-        holder.orderStatusTV.text = orderStatus
+        val orderNumber = position + 1
+        holder.orderNumberTV.text = "Order #: $orderNumber"
 
         var imageUrl = R.drawable.ic_baseline_done_outline_24
 
+        val orderStatus = myOrdersList[position].status
         var sts = "waiting"
         if (orderStatus != null) {
             sts = orderStatus
         }
 
-        if (sts == "got") {
+        if (sts.lowercase() == "got".lowercase()) {
             imageUrl = R.drawable.ic_baseline_done_outline_24
             holder.orderStatusTV.setTextColor(Color.parseColor("#41fa5d"))
         } else if (sts.lowercase() == "Waiting".lowercase()) {
             imageUrl = R.drawable.ic_waiting_svgrepo_com
             holder.orderStatusTV.setTextColor(Color.parseColor("#fab041"))
         }
+        holder.orderStatusTV.text = sts.uppercase()
         holder.orderIV.setImageResource(imageUrl)
 
-        holder.orderIV.setImageResource(imageUrl)
-
-        val products = myOrdersList[position].products
+        val myOrders = myOrdersList[position].products
 
         holder.itemView.setOnClickListener { // setting on click listener
             // for our items of recycler items.
             Toast.makeText(context, "Clicked order is " + orderNumber, Toast.LENGTH_SHORT).show()
-            val intent = Intent(context, ActivityProduct::class.java)
-            // todo hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
-            // todo hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
-            // todo hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
-            // todo hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+            val intent = Intent(context, ActivityOrderDetails::class.java)
             val args = Bundle()
-            if (products != null) {
-                args.putSerializable("myOrders", products as Serializable)
-                args.putSerializable("intentParentOrder", myOrdersList[position].id)
-                intent.putExtra("intentOrderList", args)
+            if (myOrders != null) {
+                args.putSerializable("myOrders", myOrders as Serializable)
+                args.putSerializable("intentParentMyOrders", myOrdersList[position].id)
+                intent.putExtra("intentMyOrders", args)
             }
 
             context.startActivity(intent)

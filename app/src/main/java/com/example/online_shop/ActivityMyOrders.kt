@@ -91,10 +91,10 @@ class ActivityMyOrders : AppCompatActivity() {
                     if (myOrders != null) {
                         myOrdersList= myOrders
                     }
-                    println("eeeeeeeeeeeeeeeeeeeeeeeeeee")
-                    println(myOrdersList)
 
                     recMyOrdersProductView.adapter = AdapterMyOrders(myOrdersList, context)
+                } else {
+                    handleArrayFunction(context)
                 }
             }
 
@@ -103,15 +103,11 @@ class ActivityMyOrders : AppCompatActivity() {
             }
 
         })
-
-
-
     }
 
     private fun handleArrayFunction(context: Context)  {
-        dbRef = FirebaseDatabase.getInstance().getReference("bucket_items")
+        dbRef = FirebaseDatabase.getInstance().getReference("my_orders")
         dbRef.get().addOnSuccessListener {
-//            recFavView.adapter = AdapterFavourites(favList)
             recMyOrdersProductView.adapter = AdapterMyOrders(arrayListOf(), context)
         }
     }
