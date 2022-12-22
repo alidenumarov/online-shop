@@ -14,7 +14,7 @@ class ActivityOrderDetails : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order_details)
-        totalPriceView = findViewById(R.id.tvODItemmmmmmmPrice)
+        totalPriceView = findViewById(R.id.idODTotallllPrice)
         totalCountView = findViewById(R.id.idODTotallllCount)
 
         val intentProducts = intent.getBundleExtra("intentMyOrders")
@@ -31,8 +31,8 @@ class ActivityOrderDetails : AppCompatActivity() {
         val recyclerView: RecyclerView = findViewById(R.id.idOrderDetails)
         val llm = LinearLayoutManager(this)
         recyclerView.layoutManager = llm
-        totalPriceView.text = "Total Products Price: " + totalProductsPrice(productList)
-        totalCountView.text = "Total Products Count: " + totalProductsCount(productList)
+        totalCountView.text = "Total Products Count:      " + totalProductsCount(productList)
+        totalPriceView.text = "Total Products Price:       " + totalProductsPrice(productList) + " ₸"
 
         recyclerView.adapter = AdapterOrderDetails(productList, parentOrderId, this)
     }

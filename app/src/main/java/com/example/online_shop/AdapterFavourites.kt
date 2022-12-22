@@ -82,20 +82,6 @@ class AdapterFavourites(private var favList: ArrayList<Product>,
             holder.likeFavBtn.text = "to bucket".uppercase()
         }
 
-
-//        if (favs[position].in_bucket == 1) {
-//            holder.likeFavBtn.text = "remove from bucket".uppercase()
-//        } else {
-//            holder.likeFavBtn.text = "to bucket".uppercase()
-//        }
-//
-//        for (item in favs[position].in_favs!!) {
-//        }
-//        if (favs[position].in_favs == 1) {
-//        } else {
-//            holder.likeFavImg.setImageResource(R.drawable.ic_unliked)
-//        }
-
         var imageUrl = favList[position].image_url
         if (imageUrl == "") {
             imageUrl = "https://resources.cdn-kaspi.kz/shop/medias/sys_master/images/images/h65/h0f/33125684084766/apple-macbook-air-2020-13-3-mgn63-seryj-100797845-1-Container.jpg"
@@ -116,80 +102,6 @@ class AdapterFavourites(private var favList: ArrayList<Product>,
     }
 
     override fun getItemCount() = favList.size
-
-//    private fun addOrRemoveInFavs(fav : Product, favList: ArrayList<Product>, holder : FavouritesViewHolder): Boolean {
-//        var inFavs = false
-//        for (item in favList) {
-//            if (item.id == fav.id) {
-//                inFavs = true
-//                break
-//            }
-//        }
-//
-//        var result = true
-//        if (!inFavs) {
-//            val dbLike = holder.db.getReference("likes")
-//            dbLike.child(holder.userEmail).child(fav.id.toString()).child("in_favs").setValue(fav)
-//        } else {
-//            val dbLike = holder.db.getReference("likes")
-//            dbLike.child(holder.userEmail).child(fav.id.toString()).removeValue()
-//        }
-//
-//        return result
-//    }
-//
-//    private fun addOrRemoveInBucket(product : Product, dbRef : FirebaseDatabase): Boolean {
-//        var result = true
-////        if (product.in_bucket == 0) {
-////            val dbButton = dbRef.getReference("bucket_items")
-////            product.in_bucket = 1
-////            dbButton.child(product.id.toString()).setValue(product)
-////
-////            val dbCategories = dbRef.getReference("categories")
-////
-////            dbCategories.child(product.parent_cat_id.toString()).child("products").
-////            child(product.id.toString()).child("in_bucket").setValue(1).
-////            addOnSuccessListener {
-////                println("product was added to bucket: ${product.id}")
-////                return@addOnSuccessListener
-////            }
-////            .addOnFailureListener {
-////                result = false
-////            }
-////
-////            val dbLike = dbRef.getReference("likes")
-////            val a = dbLike.child(product.id.toString()).get()
-////            a.addOnSuccessListener { it ->
-////                if (it.value != null) {
-////                    dbLike.child(product.id.toString()).child("in_bucket").setValue(1)
-////                }
-////            }
-////
-////        } else {
-////            val dbButton = dbRef.getReference("bucket_items")
-////            dbButton.child(product.id.toString()).removeValue()
-////
-////            val dbCategories = dbRef.getReference("categories")
-////            dbCategories.child(product.parent_cat_id.toString()).child("products").
-////            child(product.id.toString()).child("in_bucket").setValue(0).
-////            addOnSuccessListener {
-////                println("product was removed from bucket: ${product.id}")
-////            }
-////                .addOnFailureListener {
-////                    result = false
-////                }
-////
-////            val dbLike = dbRef.getReference("likes")
-////            val a = dbLike.child(product.id.toString()).get()
-////            a.addOnSuccessListener { it ->
-////                if (it.value != null) {
-////                    dbLike.child(product.id.toString()).child("in_bucket").setValue(0)
-////                }
-////            }
-////        }
-//
-//        return result
-//    }
 
     private fun addOrRemoveInFavs(product : Product, holder : FavouritesViewHolder): Boolean {
     var inFavs = false

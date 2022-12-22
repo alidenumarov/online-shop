@@ -29,44 +29,64 @@
         tools:layout_editor_absoluteX="1dp" />
 
     <LinearLayout
+        android:layout_marginStart="20dp"
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/idOrderDetails"
         tools:layout_editor_absoluteX="0dp">
 
-            <LinearLayout
+        <LinearLayout
+            android:id="@+id/aaaaaaaaaaaa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/idODTotallllCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/idODTotallllCount"
-                    android:layout_width="190dp"
-                    android:layout_height="wrap_content"
-                    android:maxLength="80"
-                    android:text="Total Products Count: "
-                    android:textColor="@color/black"
-                    android:textSize="15sp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvODItemmmmmmmPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLength="80"
-                    android:text="Total Price: "
-                    android:textColor="@color/black"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                android:maxLength="80"
+                android:text="Total Products Count: "
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
         </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        tools:layout_editor_absoluteX="0dp">
+
+        <LinearLayout
+            android:id="@+id/bbbbbbbbb"
+            android:layout_marginStart="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/idODTotallllPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Products Price: "
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="6dp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
